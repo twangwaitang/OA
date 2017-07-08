@@ -1,0 +1,243 @@
+{% extends 'base.html.twig' %}
+{% block html %}
+    {% block stylesheets %}
+        {{ parent() }}
+        <style>
+            .label {
+                font-weight: 200;
+            }
+            #exam_show p{
+                display:inline-block;
+            }
+        </style>
+    {% endblock  %}
+
+    <body class="gray-bg">
+
+    <div class="wrapper wrapper-content animated fadeInUp">
+        <div class="row">
+            <div class="col-sm-12">
+
+                <div class="ibox">
+                    <div class="ibox-title">
+                        <h5><span id="question_type">试卷</span> | {{ course.name }}</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="row m-b-sm m-t-sm">
+                            <div class="col-md-4">
+                                <a href="{{ path('course') }}" type="button" id="pre" class="btn btn-primary btn-sm"><i class="fa fa-refresh"></i> 返回</a>
+                                <button type="button" id="refresh" class="btn btn-primary btn-sm"><i class="fa fa-refresh"></i> 刷新</button>
+                                <button type="button" id="add_exam_btn" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#add_exam_modal"><i class="fa fa-plus"></i> 创建试卷</button>
+
+                            </div>
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                    <input type="text" placeholder="请输入试卷名称" class="input-sm form-control"> <span class="input-group-btn">
+                                        <button type="button" class="btn btn-sm btn-primary"> 搜索</button> </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="project-list">
+                            <table class="table table-hover">
+                                <tbody>
+                                {% for exam in exams %}
+                                    <tr>
+                                        <td class="project-status">
+                                            <span class="label"> {{ exam.startTime}}</span> -
+                                            <span class="label label-primary">{{ exam.endTime }}</span>
+                                        </td>
+                                        <td class="project-title">
+                                            <a href="project_detail.html"> {{ exam.title|raw }}</a>
+                                            <span class="label label-primary"> {{ exam.startTime | state(exam.endTime) }}</span>
+                                        </td>
+                                        <td class="project-completion">
+                                            {#{% for question in exam.questions %}#}
+                                            {#<span class="label label-primary">{{ question.questionTitle }}</span>#}
+                                            {#{% endfor %}#}
+                                            <span class="label label-primary"></span>
+                                        </td>
+                                        <td class="project-actions">
+                                            <a href="{{ path('show_exam',{'exam_id':exam.id}) }}" class="btn btn-white btn-sm" target="_blank"> 试卷预览 </a>
+                                            <a href="{{ path('show_score',{'exam_id':exam.id}) }}" class="btn btn-white btn-sm" target="_blank"> 查看成绩 </a>
+                                            <button data-toggle="modal" data-target="#edit_exam_modal" class="btn btn-white btn-sm" name="{{ exam.id }}"> 编辑 </button>
+                                            <button  class="btn btn-white btn-sm" id="select_questions_btn" data-toggle="modal" data-target="#select_questions_modal" name="{{ course.id }}" data-examid="{{ exam.id }}"> 选择试题</button>
+                                            <button  class="btn btn-white btn-sm exam_remove_btn" name="{{ exam.id }}"> 删除 </button>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+
+                                </tbody>
+                            </table>
+                            <div class="navigation text-center">
+                                {{ knp_pagination_render(exams) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 查看按钮点击之后弹出 -->
+    <div class="modal fade" id="exam_show_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="overflow-y:auto">
+        <div class="modal-dialog" style="width:960px; ">
+            <div class="modal-content">
+                <div class="modal-body" id="exam_show">
+                    <div id="loading_data">数据加载中...</div>
+                    <div class="exam_title" style="text-align: center"><h1></h1></div>
+                    <div class="exam_info" style="text-align: center"><h4></h4></div>
+                    <div class="exam_duration" style="text-align: center"><h4></h4></div>
+                    <div class="exam_check"></div>
+                    <div class="exam_single"></div>
+                    <div class="exam_mutiple"></div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+    <!-- 添加试卷按钮点击之后弹出 -->
+    <div class="modal fade" id="add_exam_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="overflow-y:auto">
+        <div class="modal-dialog" style="width:960px; ">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <form role="form" id="add_exam_form">
+                        <div class="form-group">
+                            <input type="hidden" value="{{ course.id }}" name="course_id">
+                            <input name="title" type="text" placeholder="请输入试卷名称名称" class="form-control"
+                                   id="add_exam_name"
+                                   required=""
+                                   maxlength="20"
+                                   minlength="2"
+                            >
+                        </div>
+                        <div class="form-group">
+                            <input name="duration" type="number" placeholder="考试时长" class="form-control"
+                                   required=""
+                                   id="add_exam_duration"
+                            >
+                        </div>
+                        <div class="form-group">
+                            <input id="start_date_time" placeholder="考试开始日期" class="laydate-icon form-control" name="start_date"
+                                   required=""
+                            >
+                        </div>
+                        <div class="form-group">
+                            <input id="end_date_time" placeholder="考试结束日期" class="laydate-icon form-control" name="end_date"
+                                   required=""
+                            >
+                        </div>
+                        <div class="form-group">
+                            <textarea id="exam_info" cols="10" rows="1" class="ckeditor" placeholder="考试说明"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input name="single_score" type="number" placeholder="单选题总分:如50" class="form-control"
+                                                  id="single_score"
+                                >
+                            </label>
+                            <label>
+                                <input name="multiple_score" type="number" placeholder="多选题总分:如50" class="form-control"
+                                       id="multiple_score"
+                                >
+                            </label>
+                            <label>
+                                <input name="check_score" type="number" placeholder="判断题总分:如50" class="form-control"
+                                       id="check_score"
+                                >
+                            </label>
+                        </div>
+                        <button type="submit" class="btn btn-primary">保存</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    </form>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+    <div class="modal fade" id="edit_exam_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="overflow-y:auto">
+        <div class="modal-dialog" style="width:960px; ">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <form role="form" id="edit_exam_form">
+                        <div class="form-group">
+                            <input type="hidden" value="{{ course.id }}" name="course_id">
+                            <input name="title" type="text" placeholder="请输入试卷名称名称" class="form-control"
+                                   id="edit_exam_name"
+                                   required=""
+                                   maxlength="20"
+                                   minlength="2"
+                            >
+                        </div>
+                        <div class="form-group">
+                            <input name="duration" type="number" placeholder="考试时长" class="form-control"
+                                   required=""
+                                   id="edit_exam_duration"
+                            >
+                        </div>
+                        <div class="form-group">
+                            <input id="edit_start_date_time" placeholder="考试开始日期" class="laydate-icon form-control" name="start_date"
+                                   required=""
+                            >
+                        </div>
+                        <div class="form-group">
+                            <input id="edit_end_date_time" placeholder="考试结束日期" class="laydate-icon form-control" name="end_date"
+                                   required=""
+                            >
+                        </div>
+                        <div class="form-group">
+                            <textarea id="edit_exam_info" cols="10" rows="1" class="ckeditor" placeholder="考试说明"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input name="single_score" type="number" placeholder="单选题总分:如50" class="form-control"
+                                                  id="edit_single_score"
+                                >
+                            </label>
+                            <label>
+                                <input name="multiple_score" type="number" placeholder="多选题总分:如50" class="form-control"
+                                       id="edit_multiple_score"
+                                >
+                            </label>
+                            <label>
+                                <input name="check_score" type="number" placeholder="判断题总分:如50" class="form-control"
+                                       id="edit_check_score"
+                                >
+                            </label>
+                        </div>
+                        <button type="submit" class="btn btn-primary">保存</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    </form>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+    <!-- 加载试题库 -->
+    <div class="modal fade" id="select_questions_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" >
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="col-md-12">
+                        <a href="javascript:void(0);" id="single_chioce" name="{{ course.id }}">单选题</a> |
+                        <a href="javascript:void(0);" id="multiple_chioce" name="{{ course.id }}">多选题</a> |
+                        <a href="javascript:void(0);" id="true_or_false" name="{{ course.id }}">判断题</a><br>
+                        <table id="exams" style="font-size: 12px"></table>
+                    </div>
+
+                </div>
+                <br>
+                <div class="modal-footer" style="border: none">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" id="add_question_to_exam_btn">保存</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+    {{ include('common/loading.html.twig') }}
+
+    {% block javascript %}
+        {{ parent() }}
+        <script src="{{ asset('bundles/ivoryckeditor/ckeditor.js')}}"></script>
+        <script src="{{ asset('js/plugins/layer/laydate/laydate.js')}}"></script>
+        <script src="{{ asset('js/exam.js')}}"></script>
+    {% endblock  %}
+    </body>
+{% endblock %}
+

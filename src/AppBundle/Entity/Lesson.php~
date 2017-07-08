@@ -1,0 +1,434 @@
+<?php
+
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\ArrayCollection;
+use JsonSerializable;
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="lesson")
+ * @ORM\HasLifecycleCallbacks()
+ *
+ *
+ */
+class Lesson implements JsonSerializable
+{
+    /**
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+    /**
+     * @ORM\ManyToOne(targetEntity="Chapter", inversedBy="lessons")
+     * @ORM\JoinColumn(name="chapter_id", referencedColumnName="id")
+     */
+    private $chapter;
+    /**
+     *@ORM\OneToMany(targetEntity="Makers", mappedBy="lesson")
+     */
+    private $makers;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Comment", mappedBy="lesson")
+     *
+     */
+    private $comments;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Notes", mappedBy="lesson")
+     *
+     */
+    private $notes;
+    /**
+     * @ORM\OneToMany(targetEntity="Recode", mappedBy="lesson")
+     *
+     */
+    private $recodes;
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="string")
+     * @Assert\NotBlank()
+     */
+    private $name;
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="string",nullable=true)
+     */
+    private $video;
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="string",nullable=true)
+     */
+    private $duration;
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="text",nullable=true)
+     *
+     */
+    private $lessonRes;
+
+    /**
+     * Many Lessons have Many Questions.
+     * @ORM\ManyToMany(targetEntity="Questions", mappedBy="lessons")
+     */
+    private $questions;
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="created_time", type="datetime")
+     */
+    private $createdTime ;
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="updated_time", type="datetime")
+     */
+    private $updatedTime;
+
+    public function getCreatedTime()
+    {
+        return $this->createdTime;
+    }
+
+    /**
+     * @param \DateTime $createdTime
+     */
+    public function setCreatedTime($createdTime)
+    {
+        $this->createdTime = $createdTime;
+    }
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $username
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+    /**
+     * Returns the salt that was originally used to encode the password.
+     *
+     * {@inheritdoc}
+     */
+    public function getSalt()
+    {
+        // See "Do you need to use a Salt?" at http://symfony.com/doc/current/cookbook/security/entity_provider.html
+        // we're using bcrypt in security.yml to encode the password, so
+        // the salt value is built-in and you don't have to generate one
+    }
+
+    /**
+     * Removes sensitive data from the user.
+     *
+     * {@inheritdoc}
+     */
+    public function eraseCredentials()
+    {
+        // if you had a plainPassword property, you'd nullify it here
+        // $this->plainPassword = null;
+    }
+
+    /**
+     * @ORM\PrePersist    //每次在commit前都会执行这个函数，达到自动更新创建时间和更新时间
+     */
+    public function PrePersist(){
+        $date = new \DateTime('now',new \DateTimeZone('PRC'));
+        if ($this->getCreatedTime() == null){
+            $this->setCreatedTime($date);
+        }
+        $this->setUpdatedTime($date);
+    }
+
+    public function jsonSerialize()
+    {
+        return [
+            'id'=> $this->getId(),
+            'name' => $this->getName(),
+            'res' => $this->getLessonRes(),
+            'created_time' => $this->getCreatedTime(),
+        ];
+    }
+
+
+    /**
+     * Set updatedTime
+     *
+     * @param \DateTime $updatedTime
+     *
+     * @return Lesson
+     */
+    public function setUpdatedTime($updatedTime)
+    {
+        $this->updatedTime = $updatedTime;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedTime
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedTime()
+    {
+        return $this->updatedTime;
+    }
+
+    /**
+     * Set chapter
+     *
+     * @param \AppBundle\Entity\Chapter $chapter
+     *
+     * @return Lesson
+     */
+    public function setChapter(\AppBundle\Entity\Chapter $chapter = null)
+    {
+        $this->chapter = $chapter;
+
+        return $this;
+    }
+
+    /**
+     * Get chapter
+     *
+     * @return \AppBundle\Entity\Chapter
+     */
+    public function getChapter()
+    {
+        return $this->chapter;
+    }
+
+    /**
+     * Set video
+     *
+     * @param string $video
+     *
+     * @return Lesson
+     */
+    public function setVideo($video)
+    {
+        $this->video = $video;
+
+        return $this;
+    }
+
+    /**
+     * Get video
+     *
+     * @return string
+     */
+    public function getVideo()
+    {
+        return $this->video;
+    }
+
+    /**
+     * Set duration
+     *
+     * @param string $duration
+     *
+     * @return Lesson
+     */
+    public function setDuration($duration)
+    {
+        $this->duration = $duration;
+
+        return $this;
+    }
+
+    /**
+     * Get duration
+     *
+     * @return string
+     */
+    public function getDuration()
+    {
+        return $this->duration;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->comments = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add comment
+     *
+     * @param \AppBundle\Entity\Comment $comment
+     *
+     * @return Lesson
+     */
+    public function addComment(\AppBundle\Entity\Comment $comment)
+    {
+        $this->comments[] = $comment;
+
+        return $this;
+    }
+
+    /**
+     * Remove comment
+     *
+     * @param \AppBundle\Entity\Comment $comment
+     */
+    public function removeComment(\AppBundle\Entity\Comment $comment)
+    {
+        $this->comments->removeElement($comment);
+    }
+
+    /**
+     * Get comments
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getComments()
+    {
+        return $this->comments;
+    }
+
+    /**
+     * Add note
+     *
+     * @param \AppBundle\Entity\Notes $note
+     *
+     * @return Lesson
+     */
+    public function addNote(\AppBundle\Entity\Notes $note)
+    {
+        $this->notes[] = $note;
+
+        return $this;
+    }
+
+    /**
+     * Remove note
+     *
+     * @param \AppBundle\Entity\Notes $note
+     */
+    public function removeNote(\AppBundle\Entity\Notes $note)
+    {
+        $this->notes->removeElement($note);
+    }
+
+    /**
+     * Get notes
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getNotes()
+    {
+        return $this->notes;
+    }
+
+    /**
+     * Add question
+     *
+     * @param \AppBundle\Entity\Questions $question
+     *
+     * @return Lesson
+     */
+    public function addQuestion(\AppBundle\Entity\Questions $question)
+    {
+        $this->questions[] = $question;
+
+        return $this;
+    }
+
+    /**
+     * Remove question
+     *
+     * @param \AppBundle\Entity\Questions $question
+     */
+    public function removeQuestion(\AppBundle\Entity\Questions $question)
+    {
+        $this->questions->removeElement($question);
+    }
+
+    /**
+     * Get questions
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getQuestions()
+    {
+        return $this->questions;
+    }
+
+
+    /**
+     * Add recode
+     *
+     * @param \AppBundle\Entity\Recode $recode
+     *
+     * @return Lesson
+     */
+    public function addRecode(\AppBundle\Entity\Recode $recode)
+    {
+        $this->recodes[] = $recode;
+
+        return $this;
+    }
+
+    /**
+     * Remove recode
+     *
+     * @param \AppBundle\Entity\Recode $recode
+     */
+    public function removeRecode(\AppBundle\Entity\Recode $recode)
+    {
+        $this->recodes->removeElement($recode);
+    }
+
+    /**
+     * Get recodes
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getRecodes()
+    {
+        return $this->recodes;
+    }
+
+    /**
+     * Set lessonRes
+     *
+     * @param string $lessonRes
+     *
+     * @return Lesson
+     */
+    public function setLessonRes($lessonRes)
+    {
+        $this->lessonRes = $lessonRes;
+
+        return $this;
+    }
+
+    /**
+     * Get lessonRes
+     *
+     * @return string
+     */
+    public function getLessonRes()
+    {
+        return $this->lessonRes;
+    }
+}

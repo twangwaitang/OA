@@ -1,0 +1,30 @@
+
+.row
+{
+    clear: both;
+    width:80%;
+    margin: 0 auto;
+    margin-top: 20px;
+
+}
+.course-info{
+    margin: 20px 0;
+
+}
+.course-info p{
+    text-indent:2em;
+}
+.gray{
+    color: #a3a3a3;
+}
+#lesson-li li{
+    height: 40px;
+    line-height: 40px;
+    border-bottom: 1px #e1e1e1 dashed;
+}
+.teacher-list{
+    margin: 20px 0;
+}
+.teacher-list p{
+    font-size: 12px;
+}

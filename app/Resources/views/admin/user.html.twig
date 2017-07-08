@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <link rel="shortcut icon" href="favicon.ico"> <link href="{{ asset('css/bootstrap.min14ed.css?v=3.3.6')}}" rel="stylesheet">
+    <link href="{{ asset('css/plugins/bootstrap-table/bootstrap-table.min.css')}}" rel="stylesheet">
+    <link href="{{ asset('css/animate.min.css')}}" rel="stylesheet">
+    <link href="{{ asset('css/style.min862f.css?v=4.1.0')}}" rel="stylesheet">
+    <link href="{{ asset('css/plugins/toastr/toastr.min.css')}}" rel="stylesheet">
+    <link href="{{ asset('css/plugins/datepicker/datepicker3.css')}}" rel="stylesheet">
+    <link href="{{ asset('css/bootstrap-editable.css')}}" rel="stylesheet"/>
+    <link href="{{ asset('css/plugins/sweetalert/sweetalert.css')}}" rel="stylesheet">
+</head>
+
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+
+
+    {#{% for user in  users%}#}
+        {#{{ user.getUsername() }}#}
+    {#{% endfor %}#}
+    <!-- Panel Other -->
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <h5>用户管理</h5>
+        </div>
+        <div class="ibox-content">
+
+            <div id="user_group">
+                <a href="javascript:void(0);" name="">全部({{ total }})</a> |
+                {% for group in groups %}
+                    {% for role in group.roles %}
+                        <a href="javascript:void(0);" name="{{ role }}">{{ role | roles(role) }}({{ group.groupnum }})</a> |
+                    {% endfor %}
+
+                {% endfor %}
+            </div>
+            <div class="row row-lg">
+
+                <div class="col-sm-12">
+                    <!-- Example Toolbar -->
+                    <div class="example-wrap">
+                        <div class="example">
+                            <div class="btn-group hidden-xs" id="userToolbar" role="group">
+                                <button type="button" class="btn btn-outline btn-default" data-toggle="modal"  title="新增" href="form_basic.html#modal-form">
+                                    <a ><i class="glyphicon glyphicon-plus" aria-hidden="true"></i></a>
+                                </button>
+                                <button type="button" class="btn btn-outline btn-default" id="refresh" title="刷新">
+                                    <i class="glyphicon glyphicon-refresh" aria-hidden="true"></i>
+                                </button>
+                                <button type="button" class="btn btn-outline btn-default" id="user_remove" title="删除">
+                                    <i class="glyphicon glyphicon-trash" aria-hidden="true"></i>
+                                </button>
+                                <button type="button" class="btn btn-outline btn-default" id="password_reset" title="密码重置">
+                                    <i class="glyphicon glyphicon-wrench" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                            <table id="users" ></table>
+                        </div>
+                    </div>
+                    <!-- End Example Toolbar -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="modal-form" class="modal fade" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">新增</h4>
+                </div>
+                <div class="modal-body">
+                    <form role="form" id="userAddForm">
+                        <div class="form-group">
+                            <input name="username" type="text" placeholder="请输入用户名" class="form-control"
+                                   id="user_username"
+                                   required=""
+                                   maxlength="10"
+                                   minlength="2"
+                            >
+                        </div>
+                        <div class="form-group">
+                            <input type="password" name="password" placeholder="密码" class="form-control"
+                                   id="user_password"
+                                   maxlength="10"
+                                   minlength="6"
+                            >
+                        </div>
+                        <div class="form-group">
+                            <select class="form-control" id="positions" placeholder="角色" name="roles">
+                                <option value="ROLE_USER">学生</option>
+                                <option value="ROLE_TEACHER">教师</option>
+                                <option value="ROLE_ADVISOR">导师</option>
+                            </select>
+                        </div>
+                        <div>
+                            <button class="btn btn-sm btn-primary" type="submit" id="user_add">保存</button> &nbsp;&nbsp;
+                            <button class="btn btn-sm btn-primary" data-dismiss="modal">取消</button> &nbsp;&nbsp;
+                        </div>
+                    </form>
+            </div>
+        </div>
+    </div>
+    </div>
+    <!-- loading -->
+    <div class="modal fade" id="loading" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop='static'>
+        <div class="modal-dialog" role="document" style="text-align: center">
+            <div class="sk-spinner sk-spinner-chasing-dots">
+                <div class="sk-dot1"></div>
+                <div class="sk-dot2"></div>
+            </div>
+            <span style="color:rgba(224,224,224,0.6)">正在处理...</span>
+            </div>
+        </div>
+    </div>
+    <!-- End Panel Other -->
+</div>
+<script src="{{ asset('js/jquery.min.js?v=2.1.4')}}"></script>
+<script src="{{ asset('js/bootstrap.min.js?v=3.3.6')}}"></script>
+<script src="{{ asset('js/content.min.js?v=1.0.0')}}"></script>
+<script src="{{ asset('js/plugins/datepicker/bootstrap-datepicker.js')}}"></script>
+<script src="{{ asset('js/plugins/bootstrap-table/bootstrap-table.min.js')}}"></script>
+<script src="{{ asset('js/plugins/bootstrap-table/locale/bootstrap-table-zh-CN.min.js')}}"></script>
+<script src="{{ asset('js/demo/bootstrap-table-demo.min.js')}}"></script>
+<script src="http://static.runoob.com/assets/jquery-validation-1.14.0/dist/jquery.validate.min.js"></script>
+<script src="{{ asset('js/plugins/validate/messages_zh.min.js')}}"></script>
+<script src="{{ asset('js/plugins/toastr/toastr.min.js')}}"></script>
+<script src="{{ asset('js/bootstrap-table-editable.js')}}"></script>
+<script src="{{ asset('js/bootstrap-editable.min.js')}}"></script>
+<script src="{{ asset('js/plugins/sweetalert/sweetalert.min.js')}}"></script>
+<script src="{{ asset('js/common.js')}}"></script>
+<script src="{{ asset('js/users.js')}}"></script>
+
+</body>
+
+
+<!-- Mirrored from www.zi-han.net/theme/hplus/table_bootstrap.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 20 Jan 2016 14:20:06 GMT -->
+</html>

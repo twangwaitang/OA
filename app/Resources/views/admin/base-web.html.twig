@@ -1,0 +1,90 @@
+{% extends 'base.html.twig' %}
+{% block html %}
+    {% block stylesheets %}
+        {{ parent() }}
+        <link href="{{ asset('css/jquery.fileupload.css')}}" rel="stylesheet">
+    {% endblock  %}
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <h5 id="baseweb_number">系统设置</h5>
+        </div>
+        <div class="ibox-content">
+            <div class="row row-lg">
+                <div class="col-sm-12">
+                    <!-- Example Toolbar -->
+                    <div class="example-wrap">
+                        <div class="example">
+                            <div class="col-sm-12">
+                                <button type="button" class="btn btn-outline btn-default" id="refresh">
+                                    <a><i class="glyphicon glyphicon-refresh" aria-hidden="true"></i></a>
+                                </button>
+                                <form role="form" id="baseweb_add_form" style="width: 50%">
+                                    <input type="hidden"  id="tid" name="id">
+                                <div class="form-group">
+                                    <input name="webtitle" type="text" placeholder="网站名称" class="form-control"
+                                           id="webtitle"
+                                           required=""
+                                           maxlength="20"
+                                           minlength="2"
+                                    >
+                                </div>
+                                <div class="form-group">
+                                    <label class="checkbox-inline">
+                                        <input type="radio" name="isOpen" id="optionsRadios1" value="true" style="font-size: 16px;color: #0a6aa1;"> 开放
+                                    </label>
+                                    <label class="checkbox-inline">
+                                        <input type="radio" name="isOpen" id="optionsRadios2"  value="false" style="font-size: 16px;color: #0a6aa1;"> 关闭
+                                    </label>
+                                </div>
+
+                                <div class="form-group">
+                                    <span class="btn btn-success fileinput-button">
+                                        <i class="glyphicon glyphicon-plus"></i>
+                                        <span>上传logo</span>
+                                        <!-- The file input field used as target for the file upload widget -->
+                                        <input id="fileupload" type="file" name="files[]" multiple>
+                                    </span>
+                                    <div>图片格式为jpg,png,图片不得超过100kb</div>
+                                    <br>
+                                    <!-- The global progress bar -->
+                                    <div id="progress" class="progress">
+                                        <div class="progress-bar progress-bar-success"></div>
+                                    </div>
+                                    <!-- The container for the uploaded files -->
+                                    <div id="files" class="files"></div>
+                                    <div id="file_path"></div>
+                                    <input type="hidden" id="file_name" name="logo">
+                                </div>
+                                    <div class="form-group">
+                                        <textarea rows="10" cols="100" id='footer' name="footer" placeholder="底部信息200字以内"></textarea>
+                                    </div>
+                                <div>
+                                    <button class="btn btn-sm btn-primary" type="submit" id="user_add">保存</button> &nbsp;&nbsp;
+                                </div>
+                            </form>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Example Toolbar -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<!-- loading -->
+{{ include('common/loading.html.twig') }}
+{% block javascript %}
+    {{ parent() }}
+    <script src="{{ asset('js/plugins/uploader/jquery.ui.widget.js')}}"></script>
+    <script src="{{ asset('js/plugins/uploader/jquery.iframe-transport.js')}}"></script>
+    <script src="{{ asset('js/plugins/uploader/jquery.fileupload.js')}}"></script>
+    <script src="{{ asset('js/plugins/uploader/jquery.fileupload-process.js')}}"></script>
+    <script src="{{ asset('js/plugins/uploader/jquery.fileupload-validate.js')}}"></script>
+    <script src="{{ asset('js/baseweb.js')}}"></script>
+{% endblock  %}
+</body>
+{% endblock %}
+

@@ -1,0 +1,122 @@
+{% extends 'base.html.twig' %}
+{% block html %}
+    {% block stylesheets %}
+        {{ parent() }}
+        <link href="{{ asset('css/jquery.fileupload.css')}}" rel="stylesheet">
+    {% endblock  %}
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <h5>学生管理</h5>
+        </div>
+
+        <div class="ibox-content">
+            <div id="student_group">
+                <a href="javascript:void(0);" name="">全部({{ total }})</a>
+                {% for group in groups %}
+                    <a href="javascript:void(0);" name="{{ group.grade }}">{{ group.grade }}({{ group.groupnum }})</a>
+                {% endfor %}
+            </div>
+
+            <div class="row row-lg">
+                <div class="col-sm-12">
+                    <!-- Example Toolbar -->
+                    <div class="example-wrap">
+                        <div class="example">
+                            <div class="btn-group hidden-xs" id="student_toolbar" role="group">
+                                <button type="button" class="btn btn-outline btn-default" data-toggle="modal"  href="form_basic.html#modal-form">
+                                    <a><i class="glyphicon glyphicon-plus" aria-hidden="true"></i></a>
+                                </button>
+                                <button type="button" class="btn btn-outline btn-default" id="refresh">
+                                    <a><i class="glyphicon glyphicon-refresh" aria-hidden="true"></i></a>
+                                </button>
+                                <button type="button" class="btn btn-outline btn-default" id="student_remove">
+                                    <a> <i class="glyphicon glyphicon-trash" aria-hidden="true"></i></a>
+                                </button>
+                                <button type="button" class="btn btn-outline btn-default" id="student_import"
+                                        title="上传excel" data-toggle="modal" href="form_basic.html#student_upload"
+                                >
+                                    <a> <i class="glyphicon glyphicon-open" aria-hidden="true"></i></a>
+                                </button>
+                                <button type="button" class="btn btn-outline btn-default" id="student_export">
+                                    <a> <i class="glyphicon glyphicon-save" aria-hidden="true"></i></a>
+                                </button>
+                            </div>
+                            <table id="student" ></table>
+                        </div>
+                    </div>
+                    <!-- End Example Toolbar -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="modal-form" class="modal fade" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">新增</h4>
+                </div>
+                <div class="modal-body">
+                    <form role="form" id="position_add_form">
+                        <div class="form-group">
+                            <input name="name" type="text" placeholder="2-10位职位名称" class="form-control"
+                                   id="name"
+                                   required=""
+                                   maxlength="10"
+                                   minlength="2"
+                            >
+                        </div>
+                        <div>
+                            <button class="btn btn-sm btn-primary" type="submit" id="student_add">保存</button> &nbsp;&nbsp;
+                            <button class="btn btn-sm btn-primary" type="submit" id="student_add_next">保存并添加下一个</button> &nbsp;&nbsp;
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="student_upload" class="modal fade" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">上传</h4>
+                </div>
+                <div class="modal-body">
+                     <span class="btn btn-success fileinput-button">
+                            <i class="glyphicon glyphicon-plus"></i>
+                        <span>选择文件</span>
+
+                         <!-- The file input field used as target for the file upload widget -->
+                 <input id="fileupload" type="file" name="files[]" multiple>
+                    </span>
+                    <div>文件格式为xls,xlsx,文件不得超过500kb| <a href="{{ asset('excel/student.xls') }}" download>下载样表</a></div>
+                    <br>
+                    <!-- The global progress bar -->
+                    <div id="progress" class="progress">
+                        <div class="progress-bar progress-bar-success"></div>
+                    </div>
+                    <!-- The container for the uploaded files -->
+                    <div id="files" class="files"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{ include('common/loading.html.twig') }}
+
+{% block javascript %}
+    {{ parent() }}
+    <script src="{{ asset('js/plugins/uploader/jquery.ui.widget.js')}}"></script>
+    <script src="{{ asset('js/plugins/uploader/jquery.iframe-transport.js')}}"></script>
+    <script src="{{ asset('js/plugins/uploader/jquery.fileupload.js')}}"></script>
+    <script src="{{ asset('js/plugins/uploader/jquery.fileupload-process.js')}}"></script>
+    <script src="{{ asset('js/plugins/uploader/jquery.fileupload-validate.js')}}"></script>
+    <script src="{{ asset('js/uploader.js')}}"></script>
+    <script src="{{ asset('js/student.js')}}"></script>
+{% endblock  %}
+</body>
+{% endblock %}
+

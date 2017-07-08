@@ -1,0 +1,127 @@
+{% extends 'base.html.twig' %}
+{% block html %}
+    {% block stylesheets %}
+        {{ parent() }}
+        <style>
+            .label {
+                font-weight: 200;
+            }
+            #question_show_answers p{
+                display:inline-block;
+            }
+        </style>
+    {% endblock  %}
+
+    <body class="gray-bg">
+
+    <div class="wrapper wrapper-content animated fadeInUp">
+        <div class="row">
+            <div class="col-sm-12">
+
+                <div class="ibox">
+                    <div class="ibox-title">
+                        <h5><span id="question_type">试题</span> | {{ lesson.name }}</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="row m-b-sm m-t-sm">
+                            <div class="col-md-4">
+                                <a href="{{ path('course') }}" type="button" id="pre" class="btn btn-primary btn-sm"><i class="fa fa-refresh"></i> 返回</a>
+                                <button type="button" id="refresh" class="btn btn-primary btn-sm"><i class="fa fa-refresh"></i> 刷新</button>
+                                <button  class="btn btn-primary btn-sm" id="select_questions_btn" data-toggle="modal" data-target="#select_questions_modal" name="{{ course.id }}"> 选择试题</button>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                    <input type="text" placeholder="请输入项目名称" class="input-sm form-control"> <span class="input-group-btn">
+                                        <button type="button" class="btn btn-sm btn-primary"> 搜索</button> </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="project-list">
+                            <table class="table table-hover">
+                                <tbody>
+                                {% for question in questions %}
+                                    <tr>
+                                        <td class="project-status">
+                                            {% if question.questionLevel == '0' %}
+                                                <span class="label label-primary"> {{ question.questionLevel|level }}</span>
+                                            {% elseif question.questionLevel == '1'%}
+                                                <span class="label label-warning">{{ question.questionLevel|level}}</span>
+                                            {% else %}
+                                                <span class="label label-danger"> {{ question.questionLevel|level }}</span>
+                                            {% endif %}
+
+                                        </td>
+                                        <td>
+                                              <span class="label label-primary">{{ question.questionType | questionType }}</span>
+                                        </td>
+                                        <td class="project-title">
+                                            <a href="project_detail.html"> {{ question.questionTitle|raw }}</a>
+                                            <small>创建于{{ question.createdTime|date("Y-m-d") }} </small>
+                                        </td>
+                                        <td class="project-completion">
+                                            <span class="label label-primary"></span>
+                                            <span class="label label-primary"></span>
+                                        </td>
+                                        <td class="project-actions">
+                                            <button data-toggle="modal" data-target="#question_show_modal" class="btn btn-white btn-sm" name="{{ question.id }}"> 查看 </button>
+                                            <button  class="btn btn-white btn-sm question_remove_btn" name="{{ question.id }}" id="{{ lesson.id }}"> 删除 </button>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+
+                                </tbody>
+                            </table>
+                            <div class="navigation text-center">
+                                {{ knp_pagination_render(questions) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 查看按钮点击之后弹出 -->
+    <div class="modal fade" id="question_show_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="overflow-y:auto">
+        <div class="modal-dialog" style="width:500px; ">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div id="loading_data">数据加载中...</div>
+                    <div id="question_show_title"></div>
+                    <div id="question_show_answers"></div>
+                    <div id="question_answer"></div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+
+    <!-- 加载试题库 -->
+    <div class="modal fade" id="select_questions_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" >
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="col-md-12">
+                        <a href="javascript:void(0);" id="single_chioce" name="{{ course.id }}">单选题</a> |
+                        <a href="javascript:void(0);" id="multiple_chioce" name="{{ course.id }}">多选题</a> |
+                        <a href="javascript:void(0);" id="true_or_false" name="{{ course.id }}">判断题</a><br>
+                        <table id="questions" style="font-size: 12px"></table>
+                    </div>
+
+                </div>
+                <br>
+                <div class="modal-footer" style="border: none">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" id="add_question_to_lesson_btn" name="{{ lesson.id }}">保存</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+    {{ include('common/loading.html.twig') }}
+
+    {% block javascript %}
+        {{ parent() }}
+        <script src="{{ asset('js/lesson-questions.js')}}"></script>
+    {% endblock  %}
+    </body>
+{% endblock %}
+

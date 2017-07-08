@@ -1,0 +1,60 @@
+
+{% extends 'home-base.html.twig' %}
+
+  {% block stylesheets %}
+      {{ parent() }}
+      <style>
+          .blog{
+              height: 30px;
+              line-height: 30px;
+                border-bottom: 1px #cccccc dashed;
+          }
+          .blog span{
+              float: right;
+          }
+          #question_show p{
+              display:inline-block;
+          }
+      </style>
+  {% endblock  %}
+{% block body %}
+    <body class="backg_huibai">
+    {% block content %}
+        <div class="clear"></div>
+        <div class="content">d
+            <div class="margin10" style="text-align: center">
+                <h1 class="margin_b10">考试成绩为{{ score.score }}分</h1>
+                <p>姓名:{{ student.name }} 学号:{{ student.number }}</p>
+                <a href="/" class="btn btn-primary" id="blog_submit">返回首页</a>
+            </div>
+
+
+        </div>
+
+    {% endblock %}
+    {{ include('common/loading.html.twig') }}
+    {% block javascript %}
+        {{ parent() }}
+
+        <script>
+
+
+
+        </script>
+    {% endblock  %}
+    </body>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

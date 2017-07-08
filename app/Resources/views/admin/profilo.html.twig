@@ -1,0 +1,119 @@
+{% extends 'base.html.twig' %}
+{% block html %}
+    {% block stylesheets %}
+        {{ parent() }}
+        <link href="{{ asset('css/jquery.fileupload.css')}}" rel="stylesheet">
+    {% endblock  %}
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <h5 id="profilo_number" data-number="{{ username }}">个人中心</h5>
+        </div>
+        <div class="ibox-content">
+            <div class="row row-lg">
+                <div class="col-sm-12">
+                    <!-- Example Toolbar -->
+                    <div class="example-wrap">
+                        <div class="example">
+                            <div class="btn-group hidden-xs" id="position_toolbar" role="group">
+                                <button type="button" class="btn btn-outline btn-default" id="refresh">
+                                    <a><i class="glyphicon glyphicon-refresh" aria-hidden="true"></i></a>
+                                </button>
+                            </div>
+                            <div class="col-sm-12">
+                                <form role="form" id="profilo_edit_form" style="width: 50%">
+                                    <input type="hidden"  id="tid" name="id">
+                                    <input type="hidden"  id="number" name="number">
+                                <div class="form-group">
+                                    <input name="name" type="text" placeholder="姓名" class="form-control"
+                                           id="name"
+                                           required=""
+                                           maxlength="10"
+                                           minlength="2"
+                                    >
+                                </div>
+                                <div class="form-group">
+                                    <input name="tel" type="number" placeholder="手机号码" class="form-control"
+                                           id="tel"
+                                           required=""
+                                           maxlength="11"
+                                           minlength="11"
+                                    >
+                                </div>
+                                <div class="form-group">
+                                    <label class="checkbox-inline">
+                                        <input type="radio" name="gendar" id="optionsRadios1" value="男" style="font-size: 16px;color: #0a6aa1;"> 男
+                                    </label>
+                                    <label class="checkbox-inline">
+                                        <input type="radio" name="gendar" id="optionsRadios2"  value="女" style="font-size: 16px;color: #0a6aa1;"> 女
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <label class="checkbox-inline">
+                                        <input type="radio" name="position" id="optionsRadios1" value="教授" style="font-size: 16px;color: #0a6aa1;"> 教授
+                                    </label>
+                                    <label class="checkbox-inline">
+                                        <input type="radio" name="position" id="optionsRadios2"  value="副教授" style="font-size: 16px;color: #0a6aa1;"> 副教授
+                                    </label>
+                                    <label class="checkbox-inline">
+                                        <input type="radio" name="position" id="optionsRadios2"  value="讲师" style="font-size: 16px;color: #0a6aa1;"> 讲师
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <span class="btn btn-success fileinput-button">
+                                        <i class="glyphicon glyphicon-plus"></i>
+                                        <span>上传头像</span>
+                                        <!-- The file input field used as target for the file upload widget -->
+                                        <input id="fileupload" type="file" name="files[]" multiple>
+                                    </span>
+                                    <div>图片格式为jpg,png,图片不得超过500kb</div>
+                                    <br>
+                                    <!-- The global progress bar -->
+                                    <div id="progress" class="progress">
+                                        <div class="progress-bar progress-bar-success"></div>
+                                    </div>
+                                    <!-- The container for the uploaded files -->
+                                    <div id="files" class="files"></div>
+                                    <div id="file_path"></div>
+                                    <input type="hidden" id="file_name" name="face">
+                                </div>
+                                    <div class="form-group">
+                                        <textarea rows="10" cols="100" id='info' name="info" placeholder="个人简介200字以内"></textarea>
+                                    </div>
+                                <div>
+                                    <button class="btn btn-sm btn-primary" type="submit" id="user_add">保存</button> &nbsp;&nbsp;
+                                </div>
+                            </form>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Example Toolbar -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<!-- loading -->
+<div class="modal fade" id="loading" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop='static'>
+    <div class="modal-dialog" role="document" style="text-align: center">
+        <div class="sk-spinner sk-spinner-chasing-dots">
+            <div class="sk-dot1"></div>
+            <div class="sk-dot2"></div>
+        </div>
+        <span style="color:rgba(224,224,224,0.6)">正在处理...</span>
+    </div>
+</div>
+{% block javascript %}
+    {{ parent() }}
+    <script src="{{ asset('js/plugins/uploader/jquery.ui.widget.js')}}"></script>
+    <script src="{{ asset('js/plugins/uploader/jquery.iframe-transport.js')}}"></script>
+    <script src="{{ asset('js/plugins/uploader/jquery.fileupload.js')}}"></script>
+    <script src="{{ asset('js/plugins/uploader/jquery.fileupload-process.js')}}"></script>
+    <script src="{{ asset('js/plugins/uploader/jquery.fileupload-validate.js')}}"></script>
+    <script src="{{ asset('js/profilo.js')}}"></script>
+{% endblock  %}
+</body>
+{% endblock %}
+

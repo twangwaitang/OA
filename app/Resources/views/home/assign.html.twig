@@ -1,0 +1,76 @@
+{% extends 'home-base.html.twig' %}
+
+  {% block stylesheets %}
+      {{ parent() }}
+      <style>
+          .blog{
+              height: 30px;
+              line-height: 30px;
+              border-bottom: 1px #cccccc dashed;
+          }
+          .blog span{
+              float: right;
+          }
+      </style>
+  {% endblock  %}
+{% block body %}
+    <body class="backg_huibai">
+    {% block content %}
+        <div class="clear"></div>
+        <div class="content">
+            <div class="margin10">
+                <h4 class="margin_b10">学徒任务</h4>
+            </div>
+            <div class="margin10">
+                <ul>
+                    {% for studentHasAssignment in studentHasAssignments |sort|reverse %}
+                        <li class="blog"><a href="{{ path('assignment_detail',{'sid':app.session.get('student').id,'id':studentHasAssignment.assignments.id,'aid':studentHasAssignment.id}) }}">
+                                {{ studentHasAssignment.assignments.title }} ({{ studentHasAssignment.isFinished | isAssignmentFinished }})</a>
+                            <span>{{ studentHasAssignment.createdTime|date("Y-m-d") }}</span></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+    {% endblock %}
+    <div class="modal fade" id="blog_show_modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="overflow-y:auto">
+        <div class="modal-dialog" style="width:700px; ">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <input name="name" type="text" placeholder="请输入日志名称" class="form-control"
+                               id="blog_title_name"
+                               required=""
+                               maxlength="20"
+                               minlength="2"
+                        >
+                    </div>
+                    <textarea id="post_blog"></textarea>
+                    <button type="submit" class="btn btn-primary" id="blog_submit">保存</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+    {{ include('common/loading.html.twig') }}
+    {% block javascript %}
+        {{ parent() }}
+        <script src="{{ asset('bundles/ivoryckeditor/ckeditor.js')}}"></script>
+        <script src="{{ asset('js/blog.js')}}"></script>
+    {% endblock  %}
+    </body>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

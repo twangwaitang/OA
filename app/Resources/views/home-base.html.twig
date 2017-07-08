@@ -1,0 +1,38 @@
+{% block html %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}堂外堂校企合作平台{% endblock %}</title>
+        {% block stylesheets %}
+            <link href="{{ asset('css/bootstrap.min14ed.css')}}" rel="stylesheet">
+            <link href="{{ asset('css/font-awesome.min93e3.css')}}" rel="stylesheet">
+            <link href="{{ asset('css/plugins/sweetalert/sweetalert.css')}}" rel="stylesheet">
+            <link href="{{ asset('css/muke.css')}}" rel="stylesheet">
+        {% endblock %}
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+    </head>
+    {% block body %}
+    <body>
+            {% block header %}
+                {{ include('common/header.html.twig') }}
+            {% endblock %}
+
+            {% block content %}
+
+            {% endblock %}
+            {% block footer %}
+                {{ include('common/footer.html.twig') }}
+            {% endblock %}
+        {% block javascript %}
+            <script src="{{ asset('js/jquery.min.js')}}"></script>
+            <script src="{{ asset('js/bootstrap.min.js')}}"></script>
+            <script src="{{ asset('js/plugins/toastr/toastr.min.js')}}"></script>
+            <script src="{{ asset('js/plugins/sweetalert/sweetalert.min.js')}}"></script>
+            <script src="{{ asset('js/common.js')}}"></script>
+        {% endblock %}
+    </body>
+    {% endblock %}
+</html>
+{% endblock %}

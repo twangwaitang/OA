@@ -1,0 +1,133 @@
+{% extends 'base.html.twig' %}
+{% block html %}
+    {% block stylesheets %}
+        {{ parent() }}
+        <link href="{{ asset('css/jquery.fileupload.css')}}" rel="stylesheet">
+    {% endblock  %}
+
+<body class="gray-bg">
+    <div class="wrapper wrapper-content animated fadeInUp">
+        <div class="row">
+            <div class="col-sm-12">
+
+                <div class="ibox">
+                    <div class="ibox-title">
+                        <h5>友情链接管理</h5>
+                        <div class="ibox-tools">
+
+                        </div>
+
+                    </div>
+                    <div class="ibox-content">
+                        <div class="row m-b-sm m-t-sm">
+                            <div class="col-md-2">
+                                <button type="button" id="refresh" class="btn btn-primary btn-sm"><i class="fa fa-refresh"></i> 刷新</button>
+                                <button  class="btn btn-primary btn-sm" data-toggle="modal" data-target="#links_add_modal"> 创建</button>
+                            </div>
+                            <div class="col-md-8">
+                            </div>
+                        </div>
+
+                        <div class="project-list">
+
+                            <table class="table table-hover">
+                                <tbody>
+                                {% for link in links |sort|reverse %}
+                                    <tr>
+                                        <td class="project-status">
+                                            <span class="label label-primary">{{ link.isPublic | isTop}}</span>
+                                        </td>
+                                        <td class="project-title">
+                                            {{ link.title }}
+                                        </td>
+                                        <td>
+                                            {% if link.thumbnial %}
+                                                <img src="{{ asset('/uploads/links/'~ link.thumbnial) }}" width="120" height="60">
+                                            {% else %}
+                                                <img src="../img/course_default.jpg" width="120" height="60">
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <a href="{{ link.url }}" target="_blank">{{ link.url }}</a>
+                                        </td>
+                                        <td class="project-actions">
+                                            {% if link.isPublic %}
+                                                <button  class="btn btn-white btn-sm cancel_top_links_btn" name="{{ link.id }}"> 取消推荐 </button>
+                                            {% else %}
+                                                <button  class="btn btn-white btn-sm top_links_btn" name="{{ link.id }}"> 推荐到首页 </button>
+                                            {% endif %}
+                                            <button  class="btn btn-white btn-sm remove_links_btn" name="{{ link.id }}"> 删除 </button>
+                                        </td>
+                                    </tr>
+
+                                {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <!-- 添加新闻按钮点击之后弹出 -->
+    <div class="modal fade" id="links_add_modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="width:960px;">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <form role="form" id="links_add_form">
+                        <div class="form-group">
+                            <input name="title" type="text" placeholder="请输入标题" class="form-control"
+                                   id="links_add_title"
+                                   required=""
+                                   maxlength="20"
+                                   minlength="2"
+                            >
+                        </div>
+                        <div class="form-group">
+                            <input name="url" type="url" placeholder="请输入链接如:http://www.tangwaitang.cn" class="form-control"
+                                   id="links_add_url"
+                                   required=""
+                                   maxlength="100"
+                                   minlength="2"
+                            >
+                        </div>
+                        <div class="form-group">
+                            <span class="btn btn-success fileinput-button">
+                                <i class="glyphicon glyphicon-plus"></i>
+                                <span>上传封面图片</span>
+                                <!-- The file input field used as target for the file upload widget -->
+                                <input id="fileupload" type="file" name="files[]" multiple>
+                            </span>
+                            <div>图片格式为jpg,png,图片不得超过100kb</div>
+                            <br>
+                            <!-- The global progress bar -->
+                            <div id="progress" class="progress">
+                                <div class="progress-bar progress-bar-success"></div>
+                            </div>
+                            <!-- The container for the uploaded files -->
+                            <div id="files" class="files"></div>
+                            <div id="file_path"></div>
+                            <input id="file_name" type="hidden" name="thumbnial">
+                        </div>
+                        <button type="submit" class="btn btn-primary">保存</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    </form>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+
+    {{ include('common/loading.html.twig') }}
+
+    {% block javascript %}
+        {{ parent() }}
+        <script src="{{ asset('js/plugins/uploader/jquery.ui.widget.js')}}"></script>
+        <script src="{{ asset('js/plugins/uploader/jquery.iframe-transport.js')}}"></script>
+        <script src="{{ asset('js/plugins/uploader/jquery.fileupload.js')}}"></script>
+        <script src="{{ asset('js/plugins/uploader/jquery.fileupload-process.js')}}"></script>
+        <script src="{{ asset('js/plugins/uploader/jquery.fileupload-validate.js')}}"></script>
+        <script src="{{ asset('js/links.js')}}"></script>
+    {% endblock  %}
+</body>
+{% endblock %}
+

@@ -1,0 +1,79 @@
+{% extends 'home-base.html.twig' %}
+
+  {% block stylesheets %}
+      {{ parent() }}
+      <style>
+          .blog{
+              height: 30px;
+              line-height: 30px;
+              border-bottom: 1px #cccccc dashed;
+          }
+          .blog span{
+              float: right;
+          }
+      </style>
+  {% endblock  %}
+
+{% block body %}
+    <body class="backg_huibai">
+
+    {% block content %}
+        <div class="clear" style="clear: both"></div>
+        <div class="content">
+            <div class="margin10">
+                {#<a href="{{ path('profilo_assign',{'username':app.user.username}) }}">返回</a>#}
+            </div>
+            <div class="margin20">
+                <div>
+                    {% for assignmentReplay in assignmentReplays %}
+                        <p>
+                            {% if assignmentReplay.uid | replayName =='学生'%}
+                                <a href="#">{{ studentname}}</a>  回复
+                            {% else %}
+                                <a href="#">{{ assignment.teacher.name }}老师</a> 回复
+                            {% endif %}
+                            <span style="font-size: 12px;color:#cccccc;float: right">{{ assignmentReplay.createdTime|date("Y-m-d H:i:s") }}</span></p>
+                        {{ assignmentReplay.content | raw }}
+                        <hr>
+                    {% endfor %}
+                </div>
+
+            </div>
+            <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#assignment_replay_modal" id="{{ app.user.id }}" name="{{ assignmentId }}">回复</button>
+        </div>
+
+    {% endblock %}
+    <div class="modal fade" id="assignment_replay_modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="overflow-y:auto">
+        <div class="modal-dialog" style="width:700px; ">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <textarea id="post_replay"></textarea>
+                    <button type="submit" class="btn btn-primary" id="blog_submit">保存</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+    {{ include('common/loading.html.twig') }}
+
+    {% block javascript %}
+        {{ parent() }}
+        <script src="{{ asset('bundles/ivoryckeditor/ckeditor.js')}}"></script>
+        <script src="{{ asset('js/assignment-replay.js')}}"></script>
+    {% endblock  %}
+    </body>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

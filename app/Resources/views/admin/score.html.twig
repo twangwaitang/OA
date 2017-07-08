@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+{% block html %}
+    {% block stylesheets %}
+        {{ parent() }}
+    {% endblock  %}
+
+    <body class="gray-bg">
+    <div class="wrapper wrapper-content animated fadeInUp">
+        <div class="row">
+            <div class="col-sm-12">
+
+                <div class="ibox">
+                    <div class="ibox-title">
+                        <h5>成绩管理</h5>
+                        <div class="ibox-tools">
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="row m-b-sm m-t-sm">
+                            <div class="col-md-2">
+                                <button type="button" id="refresh" class="btn btn-white btn-sm"> 刷新</button>
+                                <a href="{{ path('group') }}" type="button" id="pre" class="btn btn-white btn-sm"> 返回</a>
+                                <a download="students.xls" href="#" class="btn btn-white btn-sm" onclick="return ExcellentExport.excel(this, 'scores', '成绩');">导出</a>
+
+                            </div>
+                            <div class="col-md-10">
+                                <div class="input-group">
+                                    <input type="text" placeholder="请输入项目名称" class="input-sm form-control"> <span class="input-group-btn">
+                                        <button type="button" class="btn btn-sm btn-primary"> 搜索</button> </span>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="project-list">
+
+                            <table class="table table-striped" id="scores">
+                              <tr>
+                                  <th>编号</th>
+                                  <th>姓名</th>
+                                  <th>成绩</th>
+                                  <th>完成日期</th>
+                              </tr>
+                                {% for score in scores %}
+                                    <tr>
+                                        <td>{{ loop.index }}</td>
+                                        <td>{{ score.student.name }}</td>
+                                        <td>{{ score.score }}</td>
+                                        <td>{{ score.createdTime | date("Y-m-d")}}</td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                            <div class="navigation text-center">
+                                {{ knp_pagination_render(scores) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{ include('common/loading.html.twig') }}
+
+    {% block javascript %}
+        {{ parent() }}
+        <script src="{{ asset('js/plugins/excel-export/excellentexport.min.js')}}"></script>
+        <script src="{{ asset('js/student-in-group.js')}}"></script>
+    {% endblock  %}
+    </body>
+{% endblock %}
+

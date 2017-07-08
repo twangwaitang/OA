@@ -1,0 +1,52 @@
+.vjs-playlist .vjs-playlist-item {
+    height: 70px;
+}
+.player-container {
+    background: #1a1a1a;
+    width:1200px;
+    margin: 0 auto;
+    height: 500px;
+}
+.video-js {
+    float: left;
+    width: 70%;
+    height: 500px;
+
+}
+.vjs-playlist {
+    float: left;
+    height: 500px;
+    width:  30%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+h5{
+    padding: 10px;
+    text-align: center;
+    font-weight: 100;
+}
+.vjs-playlist-item a{
+    color: #ffffff;
+}
+.vjs-playlist-item a:hover{
+    color: #b4b4b4;
+}
+.lesson-nav{
+    width:1200px;
+    margin: 10px auto;
+}
+.btn_submit{
+    margin: 10px 0;
+}
+.table-responsive {
+    overflow-x: hidden;
+}
+.tab-content{
+    overflow-x: hidden;
+}
+#question_answers p{
+    float: right;
+}
+#maker_question_content p{
+    float: right;
+}

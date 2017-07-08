@@ -1,0 +1,124 @@
+{% extends 'home-base.html.twig' %}
+
+  {% block stylesheets %}
+      {{ parent() }}
+      <link href="{{ asset('css/jquery.fileupload.css')}}" rel="stylesheet">
+      <link href="{{ asset('css/profilo.css')}}" rel="stylesheet">
+
+  {% endblock  %}
+{% block body %}
+    <body class="backg_huibai">
+    {% block header %}
+        {{ parent() }}
+    {% endblock %}
+    {% block content %}
+        <div class="clear"></div>
+        <div class="content">
+            <div class="banner">
+                <div class="profilo">
+                    <img src="{{ asset('img/touxiang.jpg') }}">
+                </div>
+                <div class="user-info">
+                    <h3 class="user-name">
+                        <span>{{ app.session.get('student').name }}</span>
+                    </h3>
+                   <p class="about-info">
+                       <span><i class="sex"></i></span><span></span>
+                   </p>
+
+                </div>
+            </div>
+            <div class="container">
+                <div class="col-md-3 person">
+                    <ul>
+                        <li><a href="#" id="mycourse"><i class="glyphicon glyphicon-file"></i> 我的课程</a></li>
+                        <li><a href="#" id="blog"><i class="glyphicon glyphicon-list-alt"></i> 我的日志</a></li>
+                        <li><a href="#" id="assignment"><i class="glyphicon glyphicon-tag"></i> 我的任务</a></li>
+                        {% if evaluation %}
+                            <li><a href="#" id="teval"><i class="glyphicon glyphicon-ok"></i> {{ evaluation.title }}评教</a></li>
+                        {% endif %}
+                        <li><a href="#" id="personal"><i class="glyphicon glyphicon-user"></i> 个人中心</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-9 p-content">
+                    <iframe  id="person-content" name="iframe" width="100%" {#src="{{ path('profilo_blog',{'username':app.user.username}) }}" #}frameborder="0"  scrolling="no"></iframe>
+                </div>
+            </div>
+
+        </div>
+
+    {% endblock %}
+    {% block footer %}
+        {{ parent() }}
+    {% endblock %}
+    {% block javascript %}
+        {{ parent() }}
+        <script src="{{ asset('js/plugins/uploader/jquery.ui.widget.js')}}"></script>
+        <script src="{{ asset('js/plugins/uploader/jquery.iframe-transport.js')}}"></script>
+        <script src="{{ asset('js/plugins/uploader/jquery.fileupload.js')}}"></script>
+        <script src="{{ asset('js/plugins/uploader/jquery.fileupload-process.js')}}"></script>
+        <script src="{{ asset('js/plugins/uploader/jquery.fileupload-validate.js')}}"></script>
+        <script src="{{ asset('js/person.center.js')}}"></script>
+        <script>
+            $(function () {
+                 var type = getUrlParam('type');
+                 var username = {{ app.user.username }};
+                 var student_id = {{ app.session.get('student').id }}
+                 var evaluation_id = {{ evaluation.id }}
+                  if(type === 'assign'){
+                      var username = {{ app.user.username }};
+                      $('iframe').attr('src',"/user/profilo/"+username+"/assign");
+                  }
+                //获取url中的参数
+                function getUrlParam(name) {
+                    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+                    var r = window.location.search.substr(1).match(reg);  //匹配目标参数
+                    if (r != null) return unescape(r[2]); return null; //返回参数值
+                }
+                $('#mycourse').click(function () {
+
+                    $('iframe').attr('src',"/user/profilo/"+student_id+"/mycourse");
+                });
+                $('#blog').click(function () {
+
+                    $('iframe').attr('src',"/user/profilo/"+username+"/blog");
+                });
+
+                $('#assignment').click(function () {
+
+                    $('iframe').attr('src',"/user/profilo/"+username+"/assign");
+                });
+
+                $('#teval').click(function () {
+
+                    $('iframe').attr('src',"/user/profilo/"+student_id+"/"+evaluation_id+"/teval");
+                })
+            })
+        </script>
+       <script>
+     function reinitIframe(){
+          var iframe = document.getElementById("person-content");
+              var bHeight = iframe.contentWindow.document.body.scrollHeight;
+              var dHeight = iframe.contentWindow.document.documentElement.scrollHeight;
+              var height = Math.max(bHeight, dHeight);
+              iframe.height = height;
+      }
+        window.setInterval(reinitIframe,1000/60);
+       </script>
+    {% endblock  %}
+    </body>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

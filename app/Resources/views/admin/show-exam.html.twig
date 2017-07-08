@@ -1,0 +1,116 @@
+
+{% extends 'base.html.twig' %}
+  {% block stylesheets %}
+      {{ parent() }}
+      <style>
+          .blog{
+              height: 30px;
+              line-height: 30px;
+                border-bottom: 1px #cccccc dashed;
+          }
+          .blog span{
+              float: right;
+          }
+          #question_show p{
+              display:inline-block;
+          }
+      </style>
+  {% endblock  %}
+{% block body %}
+    <body class="backg_huibai">
+    {% block content %}
+        <div class="clear"></div>
+        <div class="content">
+            <div class="margin10" style="text-align: center">
+                <h1 class="margin_b10">{{ exam.title }}</h1>
+                <p>{{ exam.info | raw }}</p>
+                <p id="time">{{ exam.duration }}:00</p>
+            </div>
+            <form id="submit_form">
+                <input type="hidden" value="{{ exam.id }}" name="examid">
+            <div class="margin10">
+                <div style="width:960px;margin: 10px auto" id="question_show">
+                    <h4>{{ exam.scoreRate[0] | singlescoreRate(exam.questions)}}</h4><br>
+                    {% for question in exam.questions %}
+                        {% if question.questionType == 0 %}
+                          <div><strong>{{ loop.index }}.{{ question.questionTitle | raw}}</strong></div>
+                        {% for option in question.questionAnswer %}
+                            <label>
+                                <input type="radio" name="{{ question.id }}"  value="{{ loop.index | toLetter}}"> {{ loop.index | toLetter}}. {{ option | raw }}
+                            </label> <br>
+                        {% endfor %}
+                            <hr>
+                        {% endif %}
+
+                    {% if question.questionType == 1 %}
+                        <h4>{{ exam.scoreRate[1] | multiplescoreRate(exam.questions)}}</h4><br>
+                        <div><strong>{{ loop.index }}.{{ question.questionTitle | raw}}</strong></div>
+                        {% for option in question.questionAnswer %}
+                            <label>
+                                <input type="checkbox" name="{{ question.id }}[]"  value="{{ loop.index | toLetter}}"> {{ loop.index | toLetter}}. {{ option | raw }}
+                            </label> <br>
+                        {% endfor %}
+                        <hr>
+                    {% endif %}
+                    {% endfor %}
+
+                </div>
+            </div>
+
+            </form>
+        </div>
+
+    {% endblock %}
+    {{ include('common/loading.html.twig') }}
+    {% block javascript %}
+        {{ parent() }}
+        <script>
+            $(function () {
+                var submitForm = $('#submit_form');
+                var checkUrl = "/exam/check";
+                var m={{ exam.duration }} - 1;
+                var s=59;
+                var timer = setInterval(function(){
+                    if(s<10){
+                        $('#time').html(m+':0'+s);
+                    }else{
+                        $('#time').html(m+':'+s);
+                    }
+                    s--;
+                    if(s<0){
+                        s=59;
+                        m--;
+                    }
+                    if(m<0){
+                        clearInterval(timer);
+                        var param = $('#submit_form').serialize();
+                        submit(param);
+                    }
+                },1000)
+                // 新增
+                submitForm.validate({
+                    submitHandler: function (form) {
+                        var param = $(form).serialize();
+                        submit(param);
+                    }
+                })
+            })
+
+        </script>
+    {% endblock  %}
+    </body>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

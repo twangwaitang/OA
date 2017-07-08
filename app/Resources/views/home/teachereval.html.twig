@@ -1,0 +1,40 @@
+{% extends 'home-base.html.twig' %}
+
+  {% block stylesheets %}
+      {{ parent() }}
+      <link href="{{ asset('css/jquery.fileupload.css')}}" rel="stylesheet">
+      <link href="{{ asset('css/profilo.css')}}" rel="stylesheet">
+  {% endblock  %}
+
+{% block body %}
+    <body class="backg_huibai">
+    {% block content %}
+       <div id="teacher-list">
+         <table class="table">
+             <tr>
+                 <th>课程/环节</th>
+                 <th>学校教师</th>
+                 <th>企业导师</th>
+             </tr>
+             {% for group in groups %}
+                 <tr>
+                     <td>{{ group.course.name }}</td>
+                     <td>
+                        {% for teacher in group.teachers %}
+                            <a href="{{ path('profilo_tevadetail',{'number':teacher.number,'courseId':group.course.id,'evaluationId':evaluationId,'studentId':app.session.get('student').id}) }}">{{ teacher.name }}</a>
+                        {% endfor %}
+                     </td>
+                     <td>
+                         {% for advisor in group.advisors %}
+                             <a href="{{ path('profilo_tevadetail',{'number':advisor.number,'courseId':group.course.id,'evaluationId':evaluationId,'studentId':app.session.get('student').id}) }}">{{ advisor.name }}</a>
+                         {% endfor %}
+                     </td>
+                 </tr>
+
+             {% endfor %}
+         </table>
+       </div>
+    {% endblock  %}
+    </body>
+{% endblock %}
+

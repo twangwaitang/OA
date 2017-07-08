@@ -1,0 +1,339 @@
+{% extends 'base.html.twig' %}
+{% block html %}
+    {% block stylesheets %}
+        {{ parent() }}
+        <link href="{{ asset('css/jquery.fileupload.css')}}" rel="stylesheet">
+        <link href="{{ asset('videojs/css/video-js.css')}}" rel="stylesheet">
+        <link href="{{ asset('videojs/css/videojs.markers.min.css')}}" rel="stylesheet">
+        <style>
+            .my-player-dimensions {
+                margin: 0 auto;
+            }
+            #makers{
+                width:500px;
+                margin: 10px auto;
+            }
+            #makers li{
+                list-style: none;
+                color: #00a2d4;
+                font-size: 14px;
+                border-bottom: 1px #cccccc dashed;
+            }
+            .modal-body {
+                text-align: center;
+            }
+        </style>
+    {% endblock  %}
+
+    <body class="gray-bg">
+
+    <div class="wrapper wrapper-content animated fadeInUp">
+        <div class="row">
+            <div class="col-sm-12">
+
+                <div class="ibox">
+                    <div class="ibox-title">
+                        <h5>{{ course.name }}</h5>
+                        <input type="hidden" id="course_id" value="{{ course.id }}">
+                        <div class="ibox-tools">
+                            </div>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="row m-b-sm m-t-sm">
+                            <div class="col-md-2">
+                                <a href="{{ path('course') }}" type="button" id="pre" class="btn btn-primary btn-sm"><i class="fa fa-refresh"></i> 返回</a>
+                                <button type="button" id="refresh" class="btn btn-primary btn-sm"><i class="fa fa-refresh"></i> 刷新</button>
+                                <button  type="button" class="btn btn-primary btn-sm" id="add_chapter_btn" data-toggle="modal" data-target="#chapter_add_modal"> 添加章</button>
+                            </div>
+                            <div class="col-md-10">
+                                <div class="input-group">
+                                    <input type="text" placeholder="请输入项目名称" class="input-sm form-control"> <span class="input-group-btn">
+                                        <button type="button" class="btn btn-sm btn-primary"> 搜索</button> </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="project-list">
+
+                            <table class="table table-hover">
+                                <tbody>
+                                {% for chapter in course.chapters %}
+                                    <tr>
+                                        <td class="project-status">
+                                        第 {{  loop.index  }} 章 {{ chapter.name }}
+                                        </td>
+
+                                        <td class="project-actions">
+                                            <button   data-toggle="modal" data-target="#show_course_modal" class="btn btn-primary btn-sm" name="{{ chapter.id }}"> 折叠 </button>
+                                            <button   data-toggle="modal" data-target="#lesson_add_modal" class="btn btn-primary btn-sm"  id="add_lesson_btn" name="{{ chapter.id }}"> 添加节 </button>
+                                            <button   data-toggle="modal" data-target="#chapter_edit_modal" class="btn btn-primary btn-sm edit_chapter_btn"  id="{{ chapter.id }}" name="{{ chapter.name }}"> 编辑</button>
+                                            <button   class="btn btn-primary btn-sm remove_chapter_btn" name="{{ chapter.id }}"> 删除 </button>
+                                        </td>
+                                    </tr>
+                                    {% for lesson in chapter.lessons %}
+                                    <tr>
+                                        <td class="project-status"style="padding: 10px 0 10px 40px;font-size: 14px"> {{ loop.parent.loop.index }}.{{  loop.index  }}  {{ lesson.name }}<span>
+                                                 <a   data-toggle="modal" data-target="#lesson_edit_modal"  class="lesson-edit glyphicon glyphicon-edit"  id="{{ lesson.id }}" name="{{ lesson.name }}"> </a>
+                                                 <a   class="lesson-remove glyphicon glyphicon-trash" name="{{ lesson.id }}"></a>
+                                            </span>
+                                            <span style="float: right">{{ lesson.duration|duration }}
+                                                ({{ lesson.makers | length }})
+                                                </span>
+                                        </td>
+                                        <td class="project-actions">
+                                            {% if lesson.video %}
+                                                 {% if lesson.video | length == 36%}
+                                                    {#{% for maker in lesson.makers %}#}
+                                                        {#{{ maker }}#}
+                                                    {#{% endfor %}#}
+                                                    <button   data-toggle="modal" data-target="#add_video_question_modal" class="btn btn-info btn-sm"  id="{{lesson.id }}" name="{{ lesson.video }}" > 添加弹题 </button>
+                                                 {% else %}
+                                                     <a  href="{{ lesson.video }}" target="_blank" class="btn btn-info btn-sm"  id="show_lesson_video_btn" name="{{ lesson.id }}"> 查看视频 </a>
+                                                 {% endif %}
+                                                <button   data-toggle="modal" data-target="#lesson_add_video_modal" class="btn btn-primary btn-sm"  id="add_lesson_content_btn" name="{{ lesson.id }}"> 本地视频 </button>
+                                                <button   data-toggle="modal" data-target="#lesson_add_video_link_modal" class="btn btn-primary btn-sm"  id="add_video_link_btn" name="{{ lesson.id }}"> 网络视频 </button>
+                                            {% else %}
+                                                <button   data-toggle="modal" data-target="#lesson_add_video_modal" class="btn btn-primary btn-sm"  id="add_lesson_content_btn" name="{{ lesson.id }}"> 本地视频 </button>
+                                                <button   data-toggle="modal" data-target="#lesson_add_video_link_modal" class="btn btn-primary btn-sm"  id="add_video_link_btn" name="{{ lesson.id }}"> 网络视频 </button>
+                                            {% endif %}
+                                            <a   href="{{ path('lesson_question', {'courseid': course.id,'lessonid': lesson.id}) }}"  target="_blank" class="btn btn-warning btn-sm add_questions_btn"> 添加习题</a>
+                                            <button   data-toggle="modal" data-target="#lesson_res_modal" class="btn btn-warning btn-sm lesson_res_btn"  id="{{ lesson.id }}"> 添加资源</button>
+
+                                                     </td>
+
+                                    </tr>
+                                    {% endfor %}
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 查看按钮点击之后弹出 -->
+    <div class="modal fade" id="show_course_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="overflow-y:auto">
+        <div class="modal-dialog" style="width:960px; ">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div id="loading_data">数据加载中...</div>
+                    <div id="show_course_title"></div>
+                    <div id="show_course_info"></div>
+                    <div id="show_course_goal"></div>
+                    <div id="show_course_plan"></div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+
+
+    <!-- 添加章按钮点击之后弹出 -->
+    <div class="modal fade" id="chapter_add_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="width:960px;">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <form role="form" id="chapter_add_form">
+                        <div class="form-group">
+                            <input type="hidden" name="course" value="{{ course.id }}">
+                            <input name="name" type="text" placeholder="请输入5-40章名称" class="form-control"
+                                   id="chapter_name"
+                                   required=""
+                                   maxlength="30"
+                                   minlength="2"
+                            >
+                        </div>
+                        <button type="submit" class="btn btn-primary">保存</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    </form>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+    <!-- 修改章按钮点击之后弹出 -->
+    <div class="modal fade" id="chapter_edit_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="width:960px;">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <form role="form" id="chapter_edit_form">
+                        <div class="form-group">
+                            <input type="hidden" name="course" value="{{ course.id }}">
+                            <input name="name" type="text" placeholder="请输入5-40章名称" class="form-control"
+                                   id="chapter_edit_name"
+                                   required=""
+                                   maxlength="30"
+                                   minlength="2"
+                            >
+                        </div>
+                        <button type="submit" class="btn btn-primary">保存</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    </form>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+    <!-- 修改节按钮点击之后弹出 -->
+    <div class="modal fade" id="lesson_edit_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="width:960px;">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <form role="form" id="lesson_edit_form">
+                        <div class="form-group">
+                            <input name="name" type="text" placeholder="请输入2-30节名称" class="form-control"
+                                   id="lesson_edit_name"
+                                   required=""
+                                   maxlength="30"
+                                   minlength="2"
+                            >
+                        </div>
+                        <button type="submit" class="btn btn-primary">保存</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    </form>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+    <!-- 添加资源按钮点击之后弹出 -->
+    <div class="modal fade" id="lesson_res_modal"  role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="width:960px;">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <form role="form" id="lesson_res_form">
+                        <div class="form-group">
+                            <textarea id="res"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">保存</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    </form>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+
+
+    <!-- 添加节按钮点击之后弹出 -->
+    <div class="modal fade" id="lesson_add_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="width:960px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="submit" class="btn btn-sm btn-primary" id="add_more_lessons">添加更多节</button>
+                </div>
+                <div class="modal-body">
+                    <form role="form" id="lesson_add_form">
+                        <input type="hidden" name="chapter_id" id="chapter_id">
+                        <div id="lesson_add_content">
+                            <div class="form-group">
+                                <input name="name[]" type="text" placeholder="请输入2-30节名称" class="form-control"
+                                       id="lesson_add_name"
+                                       required=""
+                                       maxlength="30"
+                                       minlength="2"
+                                >
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">保存</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    </form>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+    <!-- 添加节内容按钮点击之后弹出 -->
+    <div class="modal fade" id="lesson_add_video_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="width:960px;">
+            <div class="modal-content">
+                <div class="modal-body">
+                        <div class="form-group">
+                            <span class="btn btn-success fileinput-button">
+                                <span><i class="glyphicon glyphicon-plus"></i>上传本地视频</span>
+                                <input id="fileupload" type="file" name="files[]" multiple>
+                                 <input type="hidden" name="duration" value="123" />
+                            </span>
+                            <div>视频格式为MP4,视频不得超过100mb</div>
+                            <br>
+                            <div id="progress" class="progress">
+                                <div class="progress-bar progress-bar-success"></div>
+                            </div>
+                            <div id="files" class="files"></div>
+                            <div id="file_path"></div>
+                            <div id="file_name"></div>
+                        </div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+    <!-- 添加网络视频按钮点击之后弹出 -->
+    <div class="modal fade" id="lesson_add_video_link_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="width:960px;">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <form role="form" id="lesson_add_video_link_form">
+                        <input type="hidden" name="lesson_id" id="add_video_link_lesson_id">
+                        <div id="lesson_add_content">
+                            <div class="form-group">
+                                <input name="video" type="text" placeholder="请输入网址" class="form-control"
+                                       id="lesson_add_video_link_name"
+                                       required=""
+                                       maxlength="100"
+                                       minlength="10"
+                                >
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">保存</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    </form>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+    <!-- 视频弹题 -->
+    <div class="modal fade" id="add_video_question_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="width:960px;">
+            <div class="modal-content">
+                <div class="modal-body">
+                        <video  id="my-video" class="video-js" controls width="500"  style="margin: 0 auto">
+                        </video>
+                    <ul id="makers"></ul>
+
+                    <button type="submit" class="btn btn-primary" id="makers_submit">保存</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+    <!-- 单选题 -->
+    <div class="modal fade" id="question_add_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="width:960px;">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <table id="questions"></table>
+                    <button type="submit" class="btn btn-primary" id="question_add_btn">保存</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+
+    {{ include('common/loading.html.twig') }}
+
+    {% block javascript %}
+        {{ parent() }}
+        <script src="{{ asset('bundles/ivoryckeditor/ckeditor.js')}}"></script>
+        {#<script src="{{ asset('js/plugins/uploader/load-image.all.min.js')}}"></script>#}
+        {#<script src="{{ asset('js/plugins/uploader/canvas-to-blob.min.js')}}"></script>#}
+        <script src="//blueimp.github.io/JavaScript-Load-Image/js/load-image.all.min.js"></script>
+        <script src="//blueimp.github.io/JavaScript-Canvas-to-Blob/js/canvas-to-blob.min.js"></script>
+        <script src="{{ asset('js/plugins/uploader/jquery.ui.widget.js')}}"></script>
+        <script src="{{ asset('js/plugins/uploader/jquery.iframe-transport.js')}}"></script>
+        <script src="{{ asset('js/plugins/uploader/jquery.fileupload.js')}}"></script>
+        <script src="{{ asset('js/plugins/uploader/jquery.fileupload-process.js')}}"></script>
+        <script src="{{ asset('js/plugins/uploader/jquery.fileupload-validate.js')}}"></script>
+        <script src="{{ asset('js/plugins/uploader/jquery.fileupload-video.js')}}"></script>
+        <script src="{{ asset('videojs/js/video.min.js')}}"></script>
+        <script src="{{ asset('videojs/js/videojs-markers.min.js')}}"></script>
+        <script src="{{ asset('js/course-detail.js')}}"></script>
+    {% endblock  %}
+    </body>
+{% endblock %}
+
+

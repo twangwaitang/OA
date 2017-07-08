@@ -1,0 +1,56 @@
+{% block html %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}OA系统{% endblock %}</title>
+        {% block stylesheets %}
+
+            <link href="{{ asset('css/bootstrap.min14ed.css?v=3.3.6')}}" rel="stylesheet">
+            <link href="{{ asset('css/plugins/bootstrap-table/bootstrap-table.min.css')}}" rel="stylesheet">
+            <link href="{{ asset('css/animate.min.css" rel="stylesheet')}}">
+            <link href="{{ asset('css/style.min862f.css?v=4.1.0')}}" rel="stylesheet">
+            <link href="{{ asset('css/plugins/toastr/toastr.min.css')}}" rel="stylesheet">
+            <link href="{{ asset('css/plugins/datepicker/datepicker3.css')}}" rel="stylesheet">
+            <link href="{{ asset('css/bootstrap-editable.css')}}" rel="stylesheet"/>
+            <link href="{{ asset('css/plugins/sweetalert/sweetalert.css')}}" rel="stylesheet">
+        {% endblock %}
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+    </head>
+    {% block body %}
+    <body>
+            {% block header %}
+
+            {% endblock %}
+            {% block siderbar %}
+
+            {% endblock %}
+            {% block content %}
+
+            {% endblock %}
+            {% block footer %}
+
+            {% endblock %}
+
+
+        {% block javascript %}
+            <script src="{{ asset('js/jquery.min.js?v=2.1.4')}}"></script>
+            <script src="{{ asset('js/bootstrap.min.js?v=3.3.6')}}"></script>
+            <script src="{{ asset('js/content.min.js?v=1.0.0')}}"></script>
+            <script src="{{ asset('js/plugins/datepicker/bootstrap-datepicker.js')}}"></script>
+            <script src="{{ asset('js/plugins/bootstrap-table/bootstrap-table.min.js')}}"></script>
+            <script src="{{ asset('js/plugins/bootstrap-table/locale/bootstrap-table-zh-CN.min.js')}}"></script>
+            <script src="{{ asset('js/demo/bootstrap-table-demo.min.js')}}"></script>
+            <script src="{{ asset('js/plugins/validate/jquery.validate.min.js')}}"></script>
+            <script src="{{ asset('js/plugins/validate/messages_zh.min.js')}}"></script>
+            <script src="{{ asset('js/plugins/toastr/toastr.min.js')}}"></script>
+            <script src="{{ asset('js/bootstrap-table-editable.js')}}"></script>
+            <script src="{{ asset('js/bootstrap-editable.min.js')}}"></script>
+            <script src="{{ asset('js/plugins/sweetalert/sweetalert.min.js')}}"></script>
+            <script src="{{ asset('js/common.js')}}"></script>
+        {% endblock %}
+    </body>
+    {% endblock %}
+</html>
+{% endblock %}

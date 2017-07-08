@@ -1,0 +1,154 @@
+{% extends 'base.html.twig' %}
+{% block html %}
+    {% block stylesheets %}
+        {{ parent() }}
+    {% endblock  %}
+
+<body class="gray-bg">
+
+    <div class="wrapper wrapper-content animated fadeInUp">
+        <div class="row">
+            <div class="col-sm-12">
+
+                <div class="ibox">
+                    <div class="ibox-title">
+                        <h5>通知管理</h5>
+                        <div class="ibox-tools">
+
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="row m-b-sm m-t-sm">
+                            <div class="col-md-2">
+                                <button type="button" id="refresh" class="btn btn-primary btn-sm"><i class="fa fa-refresh"></i> 刷新</button>
+                                <button  class="btn btn-primary btn-sm" data-toggle="modal" data-target="#news_add_modal"> 创建</button>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                    <input type="text" placeholder="请输入项目名称" class="input-sm form-control"> <span class="input-group-btn">
+                                        <button type="button" class="btn btn-sm btn-primary"> 搜索</button> </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="project-list">
+
+                            <table class="table table-hover">
+                                <tbody>
+                                {% for news in news |sort|reverse %}
+                                    <tr>
+                                        <td class="project-status">
+                                            <span class="label label-primary">{{ news.type }}</span>
+                                            <span class="label label-primary">{{ news.isTop | isTop}}</span>
+                                        </td>
+                                        <td class="project-title">
+                                            <a href="project_detail.html">{{ news.title }}</a>
+                                        </td>
+                                        <td class="project-completion">
+                                            <small>创建于 {{ news.createdTime|date("Y-m-d") }}</small>
+                                        </td>
+                                        <td class="project-actions">
+                                            <button  data-toggle="modal" data-target="#news_edit_modal" class="btn btn-white btn-sm edit_group_btn"  id="{{ news.id }}"> 编辑</button>
+                                            {% if news.isTop %}
+                                                <button  class="btn btn-white btn-sm cancel_top_news_btn" name="{{ news.id }}"> 取消推荐 </button>
+                                            {% else %}
+                                                <button  class="btn btn-white btn-sm top_news_btn" name="{{ news.id }}"> 推荐到首页 </button>
+                                            {% endif %}
+                                            <button  class="btn btn-white btn-sm remove_news_btn" name="{{ news.id }}"> 删除 </button>
+                                        </td>
+                                    </tr>
+
+                                {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <!-- 查看按钮点击之后弹出 -->
+    <div class="modal fade" id="group_details_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <table id="group_detail">
+                    </table>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+    <!-- 添加新闻按钮点击之后弹出 -->
+    <div class="modal fade" id="news_add_modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="width:960px;">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <form role="form" id="news_add_form">
+                        <div class="form-group">
+                            <input name="name" type="text" placeholder="请输入标题" class="form-control"
+                                   id="news_add_title"
+                                   required=""
+                                   maxlength="20"
+                                   minlength="2"
+                            >
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-inline">
+                                <input type="radio" name="news_type_add"  value="资讯"  style="font-size: 16px;color: #0a6aa1;" checked> 资讯
+                            </label>
+                            <label class="checkbox-inline">
+                                <input type="radio" name="news_type_add"   value="通知" style="font-size: 16px;color: #0a6aa1;"> 通知
+                            </label>
+                        </div>
+                        <div class="form-news">
+                          <textarea id="news_add_content"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">保存</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    </form>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+    <!-- 修改小组按钮点击之后弹出 -->
+    <div class="modal fade" id="news_edit_modal"  role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="overflow-y:auto">
+        <div class="modal-dialog" style="width:960px;">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <form role="form" id="news_edit_form">
+                        <div class="form-group">
+                            <input name="name" type="text" placeholder="请输入标题" class="form-control"
+                                   id="news_edit_title"
+                                   required=""
+                                   maxlength="20"
+                                   minlength="2"
+                            >
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-inline">
+                                <input type="radio" name="news_type_edit"  value="资讯"  style="font-size: 16px;color: #0a6aa1;"> 资讯
+                            </label>
+                            <label class="checkbox-inline">
+                                <input type="radio" name="news_type_edit"   value="通知" style="font-size: 16px;color: #0a6aa1;"> 通知
+                            </label>
+                        </div>
+                        <div class="form-news">
+                            <textarea id="news_edit_content"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">保存</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    </form>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+    {{ include('common/loading.html.twig') }}
+
+    {% block javascript %}
+        {{ parent() }}
+        <script src="{{ asset('bundles/ivoryckeditor/ckeditor.js')}}"></script>
+        <script src="{{ asset('js/news.js')}}"></script>
+    {% endblock  %}
+</body>
+{% endblock %}
+

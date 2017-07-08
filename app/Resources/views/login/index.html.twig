@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .loginscreen{
+            font-family: '微软雅黑 Light';
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="middle-box text-center loginscreen  animated fadeInDown">
+        <div>
+            <div>
+                <h1 class="logo-name">OA</h1>
+
+            </div>
+            <h3>O A用户登录</h3>
+            {% if error %}
+                <div>{{ error }}</div>
+            {% endif %}
+            {{ form_start(form) }}
+                {#<div class="form-group">#}
+                    {#<input type="email" class="form-control" placeholder="用户名" required="">#}
+                {#</div>#}
+                {#<div class="form-group">#}
+                    {#<input type="password" class="form-control" placeholder="密码" required="">#}
+                {#</div>#}
+                {#<button type="submit" class="btn btn-primary block full-width m-b">登 录</button>#}
+
+                {{ form_row(form.username,{'attr': {'placeholder':'5-10位用户名','maxlength':10,'minlength':5}}) }}
+                {{ form_row(form.password,{'attr': {'placeholder':'5-10位密码'}}) }}
+                {{ form_widget(form.save) }}
+            <p class="text-muted text-center"> <a href="{{ path('reg') }}">注册一个新账号</a>
+            </p>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    {{ parent() }}
+{% endblock %}
+
+

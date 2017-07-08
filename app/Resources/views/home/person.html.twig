@@ -1,0 +1,56 @@
+{% extends 'home-base.html.twig' %}
+
+  {% block stylesheets %}
+      {{ parent() }}
+      <link href="{{ asset('css/profilo.css')}}" rel="stylesheet">
+  {% endblock  %}
+
+{% block body %}
+    <body class="backg_huibai">
+    {% block content %}
+       <div id="myperson">
+           <div class="panel-body personinfo">
+               <ul class="info">
+                  <li class="info-title">
+                      <span>个人信息</span>
+                      <button id="bc" type="button" class="btn btn-primary">保存</button>
+                  <li class="clearfix">
+                       <div class="info-left">昵称</div>
+                       <div class="info-right">
+                          <input type="text" class="name" id="name" value="赵炳峰">
+                        </div>
+                       <div class="clearfix"></div>
+                    </li>
+                     <li class="clearfix">
+                         <div class="info-left">职位</div>
+                         <div class="info-right">
+                            <input type="text" class="position" id="position" value="学生">
+                         </div>
+                         <div class="clearfix"></div>
+                     </li>
+                      <li class="clearfix">
+                          <div class="info-left">性别</div>
+                           <div class="info-right sex">
+                              <input type="radio" value="男" name="sex" checked="checked">男
+                              <input type="radio" value="女" name="sex">女
+                           </div>
+                           <div class="clearfix"></div>
+                       </li>
+                        <li class="clearfix">
+                           <div class="info-left">城市</div>
+                           <div class="info-right">
+                              <input type="text" class="city" id="city" value="广州">
+                           </div>
+                            <div class="clearfix"></div>
+                         </li>
+                      </ul>
+                </div>
+        </div>
+    {% endblock  %}
+
+    {% block javascript %}
+        {{ parent() }}
+        <script src="{{ asset('bundles/ivoryckeditor/ckeditor.js')}}"></script>
+    {% endblock  %}
+    </body>
+{% endblock %}

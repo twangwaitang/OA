@@ -1,0 +1,238 @@
+{% extends 'home-base.html.twig' %}
+
+  {% block stylesheets %}
+      {{ parent() }}
+      <link href="{{ asset('css/profilo.css')}}" rel="stylesheet">
+  {% endblock  %}
+
+{% block body %}
+    <body class="backg_huibai">
+    {% block content %}
+        <div id="evaluate">
+            <form action="">
+                <ul>
+                    <li>
+                        <div>1.教师为授课做了很好的准备。</div>
+                        <div class="select">
+                            <select name="score">
+                                <option value ="1">1</option>
+                                <option value ="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value ="5" selected="selected" >5</option>
+                                <option value ="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value ="9">9</option>
+                                <option value ="10">10</option>
+                            </select>
+                        </div>
+                    </li>
+                    <li >
+                        <div>2.教师清晰展现课程主旨。</div>
+                        <div class="select">
+                            <select name="score">
+                                <option value ="1">1</option>
+                                <option value ="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value ="5" selected="selected" >5</option>
+                                <option value ="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value ="9">9</option>
+                                <option value ="10">10</option>
+                            </select>
+                        </div>
+                    </li>
+                    <li>
+                        <div>3..在课程结束时，我对学科的内容有了深入的了解。</div>
+                        <div class="select">
+                            <select name="score">
+                                <option value ="1">1</option>
+                                <option value ="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value ="5" selected="selected" >5</option>
+                                <option value ="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value ="9">9</option>
+                                <option value ="10">10</option>
+                            </select>
+                        </div>
+                    </li>
+                    <li>
+                        <div>4.这门课上使用的教学技术是有效的。</div>
+                        <div class="select">
+                            <select name="score">
+                                <option value ="1">1</option>
+                                <option value ="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value ="5" selected="selected" >5</option>
+                                <option value ="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value ="9">9</option>
+                                <option value ="10">10</option>
+                            </select>
+                        </div>
+                    </li>
+                    <li>
+                        <div>5.这门课程激发了我对所学专业的兴趣。</div>
+                        <div class="select">
+                            <select name="score">
+                                <option value ="1">1</option>
+                                <option value ="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value ="5" selected="selected" >5</option>
+                                <option value ="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value ="9">9</option>
+                                <option value ="10">10</option>
+                            </select>
+                        </div>
+                    </li>
+                    <li>
+                        <div>6.教师教育育人，尊重我，对我的人生进行有效指导。</div>
+                        <div class="select">
+                            <select name="score">
+                                <option value ="1">1</option>
+                                <option value ="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value ="5" selected="selected" >5</option>
+                                <option value ="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value ="9">9</option>
+                                <option value ="10">10</option>
+                            </select>
+                        </div>
+                    </li>
+                    <li>
+                        <div>7.教师能够耐心指导我。</div>
+                        <div class="select">
+                            <select name="score">
+                                <option value ="1">1</option>
+                                <option value ="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value ="5" selected="selected" >5</option>
+                                <option value ="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value ="9">9</option>
+                                <option value ="10">10</option>
+                            </select>
+                        </div>
+                    </li>
+                    <li>
+                        <div>8.教师及时安排学徒任务并及时反馈。</div>
+                        <div class="select">
+                            <select name="score">
+                                <option value ="1">1</option>
+                                <option value ="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value ="5" selected="selected" >5</option>
+                                <option value ="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value ="9">9</option>
+                                <option value ="10">10</option>
+                            </select>
+                        </div>
+                    </li>
+                    <li>
+                        <div>9.教师的指导提高了我的实操水平。</div>
+                        <div class="select">
+                            <select name="score">
+                                <option value ="1">1</option>
+                                <option value ="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value ="5" selected="selected" >5</option>
+                                <option value ="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value ="9">9</option>
+                                <option value ="10">10</option>
+                            </select>
+                        </div>
+                    </li>
+                    <li>
+                        <div>10.我会将这位教师推荐给其他同学。</div>
+                        <div class="select">
+                            <select name="score">
+                                <option value ="1">1</option>
+                                <option value ="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value ="5" selected="selected" >5</option>
+                                <option value ="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value ="9">9</option>
+                                <option value ="10">10</option>
+                            </select>
+                        </div>
+                    </li>
+                    <li class="submit">
+                        <button type="button" id="tj" class="btn btn-primary">提交</button>
+                    </li>
+                </ul>
+            </form>
+        </div>
+        {{ include('common/loading.html.twig') }}
+    {% endblock  %}
+    {% block javascript %}
+        {{ parent() }}
+        <script>
+            var scoreTotal=0;
+            var btn=document.getElementById("tj");
+            var score=document.getElementsByName("score");
+            btn.onclick=function(){
+                for(var j=0;j<score.length;j++){
+                    scoreTotal+=parseInt(score[j].value)
+                }
+                $.ajax({
+                    url: '/admin/evaluation-detail/add',
+                    type: "post",
+                    dataType: "json",
+                    data: {
+                        'score':scoreTotal,
+                        'sid':{{ app.session.get('student').id }},
+                        'number':{{ number }},
+                        'evaluationId':{{ evaluationId }},
+                        'courseId':{{ courseId }},
+                    },
+                    beforeSend : function ()
+                    {
+                        $('#loading').modal('show');
+                    },
+                    success: function (data) {
+                        $('#loading').modal('hide');
+                        if(data.code === 0){
+                            toastr.error(data.message);
+                        }else if(data.code === 1){
+                            alert('提交成功')
+                            $('.submit').empty();
+                        }else{
+                            toastr.error('code 501 未知错误');
+                        }
+                    },
+                    error: function (data) {
+                        $('#loading').modal('hide');
+                        toastr.error('code 500 未知错误');
+                    }
+                })
+            }
+        </script>
+    {% endblock  %}
+    </body>
+{% endblock %}
+

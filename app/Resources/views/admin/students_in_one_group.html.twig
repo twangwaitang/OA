@@ -1,0 +1,80 @@
+{% extends 'base.html.twig' %}
+{% block html %}
+    {% block stylesheets %}
+        {{ parent() }}
+        <link href="{{ asset('css/jquery.fileupload.css')}}" rel="stylesheet">
+    {% endblock  %}
+
+    <body class="gray-bg">
+    <div class="wrapper wrapper-content animated fadeInUp">
+        <div class="row">
+            <div class="col-sm-12">
+
+                <div class="ibox">
+                    <div class="ibox-title">
+                        <h5>学生管理</h5>
+                        <div class="ibox-tools">
+                            <button  class="btn btn-primary btn-xs" id="add_course_btn" data-toggle="modal" data-target="#course_add_modal"> 创建新课程</button>
+
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="row m-b-sm m-t-sm">
+                            <div class="col-md-2">
+                                <button type="button" id="refresh" class="btn btn-white btn-sm"> 刷新</button>
+                                <a href="{{ path('group') }}" type="button" id="pre" class="btn btn-white btn-sm"> 返回</a>
+                                <a download="students.xls" href="#" class="btn btn-white btn-sm" onclick="return ExcellentExport.excel(this, 'students', '成绩');">导出</a>
+
+                            </div>
+                            <div class="col-md-10">
+                                <div class="input-group">
+                                    <input type="text" placeholder="请输入项目名称" class="input-sm form-control"> <span class="input-group-btn">
+                                        <button type="button" class="btn btn-sm btn-primary"> 搜索</button> </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="project-list">
+
+                            <table class="table table-striped" id="students">
+                              <tr>
+                                  <th>编号</th>
+                                  <th>账号</th>
+                                  <th>姓名</th>
+                                  <th>电话</th>
+                                  <th>提问次数</th>
+                                  <th>笔记次数</th>
+                                  <th>课程完成度</th>
+                              </tr>
+                                {% for student in students %}
+                                    <tr>
+                                        <td>{{ loop.index }}</td>
+                                        <td>{{ student.number }}</td>
+                                        <td>{{ student.name }}</td>
+                                        <td>{{ student.tel }}</td>
+                                        <td>{{ student.number | commentNum |length}}</td>
+                                        <td>{{ student.number | noteNum(group.id) |length}}</td>
+                                        <td>{{  ((student.recodes | recodes(group.id)/group.id | totalLessons)|number_format(2, '.', ','))*100 }}%</td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                            <div class="navigation text-center">
+                                {{ knp_pagination_render(students) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{ include('common/loading.html.twig') }}
+
+    {% block javascript %}
+        {{ parent() }}
+        <script src="{{ asset('js/plugins/excel-export/excellentexport.min.js')}}"></script>
+        <script src="{{ asset('js/student-in-group.js')}}"></script>
+    {% endblock  %}
+    </body>
+{% endblock %}
+

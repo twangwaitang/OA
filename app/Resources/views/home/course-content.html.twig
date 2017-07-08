@@ -1,0 +1,157 @@
+{% extends 'home-base.html.twig' %}
+
+  {% block stylesheets %}
+      {{ parent() }}
+      <link href="{{ asset('css/course-content.css')}}" rel="stylesheet">
+  {% endblock  %}
+{% block body %}
+    <body class="backg_huibai">
+
+    {% block header %}
+        {{ parent() }}
+    {% endblock %}
+    {% block content %}
+        <div style="clear: both"></div>
+    <div class="container">
+        <div class="col-md-8">
+            <div class="course-thumbnail col-md-6">
+                <img src="{{ asset('uploads/course/'~ course.thumbnial ~ '') }}" width="300" height="200" class="thumbnail">
+            </div>
+            <div class="col-md-6">
+                <p>
+                    <a type="button" class="btn btn-outline" aria-label="Left Align">
+                        <span class="glyphicon glyphicon-align-left" aria-hidden="true"></span> {{ course.group.name }}
+                    </a>
+                </p>
+                <p>
+                    <a type="button" class="btn btn-outline" aria-label="Left Align">
+                        <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> {{ course.isPublic |isPublic}}
+                    </a>
+                </p>
+                <p>
+                    <a type="button" class="btn btn-outline" aria-label="Left Align">
+                        <span class="glyphicon glyphicon-hourglass" aria-hidden="true"></span> {{ course.isFinished |isFinished}}
+                    </a>
+                </p>
+                <p>
+                    <a type="button" class="btn btn-outline" aria-label="Left Align">
+                        <span class="glyphicon glyphicon-user" aria-hidden="true"></span> 学生 {{ course.group.students |length}} 人
+                    </a>
+                </p>
+                <p>
+                    <a type="button" class="btn btn-outline" aria-label="Left Align">
+                        <span class="glyphicon glyphicon-user" aria-hidden="true"></span> 教师 {{ course.group.teachers |length}} 人
+                    </a>
+                </p>
+                <p>
+                    <a type="button" class="btn btn-outline" aria-label="Left Align">
+                        <span class="glyphicon glyphicon-user" aria-hidden="true"></span> 导师 {{ course.group.advisors |length}} 人
+                    </a>
+                </p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div>
+            <h4>学校教师</h4>
+            {% for teacher in course.group.teachers %}
+                <div class="teacher-list">
+                    {% if teacher.face %}
+                        <img src="{{ asset('uploads/face/'~ teacher.face ~ '') }}" width="50" height="50" class="img-circle">
+                    {% else %}
+                        <img src="{{ asset('img/default_face.png') }}" width="50" height="50" class="img-circle">
+                    {% endif %}
+                 {{ teacher.name }}
+                    {% if teacher.position %}
+                    ({{ teacher.position }})
+                    {% endif %}
+                </div>
+            {% endfor %}
+            </div>
+            {% if  is_granted('IS_AUTHENTICATED_FULLY')%}
+            <div class="exams">
+                <div>
+                    <h4>课程考试</h4>
+                    <div>
+                        {% for exam in course.exams %}
+                            <div>
+                                <p>{{ exam.title }} ({{ exam.duration }} 分钟)</p>
+                                <p>{{ exam.startTime }} - {{ exam.endTime }}</p>
+                                {% if (exam.startTime < "now"|date("Y/m/d H:i:s")) and (exam.endTime > ("now"|date("Y/m/d H:i:s"))) %}
+                                        <a class="btn btn-primary btn-sm" href="{{ path('do_exam',{'id':exam.id,'uid':app.user.username }) }}">开始考试</a>
+                                    {% elseif exam.startTime > "now"|date("Y/m/d H:i:s")%}
+                                        <a class="btn btn-primary btn-sm" disabled="disabled">考试未开始</a>
+                                    {% elseif exam.endTime < "now"|date("Y/m/d H:i:s")%}
+                                        <a class="btn btn-primary btn-sm" disabled="disabled">考试已结束</a>
+                                {% endif %}
+
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+        <div class="container gray">
+            <div class="col-md-8">
+                <div class="course-info">
+                    <h4>授课计划</h4>
+                    <p>{{ course.coursePlan|raw }}</p>
+                </div>
+                <div class="course-info">
+                    <h4>课程目标</h4>
+                    <p>{{ course.courseGoal|raw  }}</p>
+                </div>
+                <div class="course-info">
+                    <h4>课程简介</h4>
+                    <p>{{ course.courseInfo|raw }}</p>
+                </div>
+                <h4>课程目录</h4>
+                <ul class="course-info">
+                    {% for chapter in course.chapters %}
+                    <li><strong style="font-size: 16px">第 {{  loop.index  }} 章 {{ chapter.name }}</strong>
+                        <ul style="margin: 0 0 0 30px" id="lesson-li">
+                            {% for lesson in chapter.lessons %}
+                            <li><a href="{{ path('home_lesson', {'courseId': course.id,'lessonId':lesson.id}) }}">{{ loop.parent.loop.index }}.{{  loop.index  }}  {{ lesson.name }}</a>
+                                {% if lesson.duration%}
+                                <span class="pull-right"><i class="glyphicon glyphicon-facetime-video"></i> {{ lesson.duration | duration}}</span>
+                                {% endif %}
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                    {% endfor %}
+                </ul>
+
+            </div>
+            <div class="col-md-4">
+
+            </div>
+        </div>
+    {% endblock %}
+    {% block footer %}
+        {{ parent() }}
+    {% endblock %}
+    {% block javascript %}
+        {{ parent() }}
+    {% endblock  %}
+    </body>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

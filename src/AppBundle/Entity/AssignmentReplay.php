@@ -1,0 +1,181 @@
+<?php
+
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\ArrayCollection;
+use JsonSerializable;
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="assignment_replay")
+ * @ORM\HasLifecycleCallbacks()
+ *
+ */
+class AssignmentReplay implements JsonSerializable
+{
+    /**
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+    /**
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     */
+    private $uid;
+    /**
+     * @ORM\ManyToOne(targetEntity="StudentHasAssignments")
+     * @ORM\JoinColumn(name="assignment_id", referencedColumnName="id")
+     */
+    private $assignment;
+    /**
+     * @ORM\Column(type="text")
+     * @Assert\NotBlank(message="任务内容不得为空")
+     */
+    private $content;
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="created_time", type="datetime")
+     */
+    private $createdTime ;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="updated_time", type="datetime")
+     */
+    private $updatedTime;
+
+    public function getCreatedTime()
+    {
+        return $this->createdTime;
+    }
+    public function setUpdatedTime($updatedTime)
+    {
+        $this->updatedTime = $updatedTime;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedTime
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedTime()
+    {
+        return $this->updatedTime;
+    }
+    /**
+     * @param \DateTime $createdTime
+     */
+    public function setCreatedTime($createdTime)
+    {
+        $this->createdTime = $createdTime;
+    }
+    public function getId()
+    {
+        return $this->id;
+    }
+    /**
+     * @ORM\PrePersist    //每次在commit前都会执行这个函数，达到自动更新创建时间和更新时间
+     */
+    public function PrePersist(){
+        $date = new \DateTime('now',new \DateTimeZone('PRC'));
+        if ($this->getCreatedTime() == null){
+            $this->setCreatedTime($date);
+        }
+        $this->setUpdatedTime($date);
+    }
+
+    public function jsonSerialize()
+    {
+        return [
+            'id'=> $this->getId(),
+            'created_time' => $this->getCreatedTime(),
+        ];
+    }
+
+
+
+
+
+
+
+    /**
+     * Set content
+     *
+     * @param string $content
+     *
+     * @return AssignmentReplay
+     */
+    public function setContent($content)
+    {
+        $this->content = $content;
+
+        return $this;
+    }
+
+    /**
+     * Get content
+     *
+     * @return string
+     */
+    public function getContent()
+    {
+        return $this->content;
+    }
+
+    /**
+     * Set uid
+     *
+     * @param \AppBundle\Entity\User $uid
+     *
+     * @return AssignmentReplay
+     */
+    public function setUid(\AppBundle\Entity\User $uid = null)
+    {
+        $this->uid = $uid;
+
+        return $this;
+    }
+
+    /**
+     * Get uid
+     *
+     * @return \AppBundle\Entity\User
+     */
+    public function getUid()
+    {
+        return $this->uid;
+    }
+
+    /**
+     * Set assignment
+     *
+     * @param \AppBundle\Entity\StudentHasAssignments $assignment
+     *
+     * @return AssignmentReplay
+     */
+    public function setAssignment(\AppBundle\Entity\StudentHasAssignments $assignment = null)
+    {
+        $this->assignment = $assignment;
+
+        return $this;
+    }
+
+    /**
+     * Get assignment
+     *
+     * @return \AppBundle\Entity\StudentHasAssignments
+     */
+    public function getAssignment()
+    {
+        return $this->assignment;
+    }
+}

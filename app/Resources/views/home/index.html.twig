@@ -1,0 +1,193 @@
+{% extends 'home-base.html.twig' %}
+
+  {% block stylesheets %}
+      {{ parent() }}
+      <link href="{{ asset('css/owl.carousel.css')}}" rel="stylesheet">
+      <link href="{{ asset('css/owl.theme.css')}}" rel="stylesheet">
+      <style>
+          #owl-demo {
+              width: 1200px;
+              margin-left: auto;
+              margin-right: auto;
+          }
+          #owl-demo .item {
+              display: block;
+          }
+          #owl-demo img {
+              display: block;
+              width: 100%;
+          }
+      </style>
+  {% endblock  %}
+{% block body %}
+<body class="backg_huibai">
+{% if error %}
+    <div class="alert alert-danger">
+        {{ error.message|trans  }}
+    </div>
+{% endif %}
+{% block header %}
+    {{ parent() }}
+{% endblock %}
+{% block content %}
+
+<!-- 实战推荐 -->
+<div class="width100 float_l margin_b40">
+    <div class="width_1200 margin_auto ">
+        <div id="owl-demo" class="owl-carousel margin_t20">
+            <a class="item"><img src="{{ asset('img/silde/fullimage1.jpg') }}" alt=""></a>
+            <a class="item"><img src="{{ asset('img/silde/fullimage2.jpg') }}" alt=""></a>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <h2>最新资讯</h2>
+                <div class="box-shadow">
+                    <img src="{{ asset('img/title_2.jpg') }}" width="100%" height="100">
+                    <div class="padding10 notes">
+                        <ul>
+                            {% for news in news %}
+                                <li> <a href="{{ path('news_detail',{'id':news.id}) }}">{{ news.title }}</a><span class="float_r">{{ news.createdTime|date("Y-m-d") }}</span></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <p class="more"><a href="#">获取更多-></a></p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <h2>公告通知</h2>
+                <div class="box-shadow">
+                    <img src="{{ asset('img/title_3.jpg') }}" width="100%" height="100">
+                    <div class="padding10 notes">
+                        <ul>
+                            {% for note in notes %}
+                                <li> <a href="{{ path('news_detail',{'id':note.id}) }}">{{ note.title }}</a><span class="float_r">{{ note.createdTime|date("Y-m-d") }}</span></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <p class="more"><a href="#">获取更多-></a></p>
+                </div>
+            </div>
+        </div>
+        <div class="width100 float_l margin_b20" style="border-bottom: 1px #dddddd solid">
+            <h2>课程推荐</h2>
+        </div>
+
+        <div class="width100 float_l">
+            {% for course in courses %}
+            <div class="width_224 height172 float_l margin_r15 border_shadow jingguoxianshi over_pos bianshou">
+                <div class="width100 float_l img_100 z_inx_1">
+                    {% if  course.thumbnial  %}
+                    <a href="{{ path('course_content', {'courseid': course.id}) }}"  target="_blank"><img src="../uploads/course/{{ course.thumbnial }}"></a>
+                    {% endif %}
+                </div>
+                <div class="img_backg2 donghua">
+                    <a href="{{ path('course_content', {'courseid': course.id}) }}" target="_blank"><span class="margin_t15 float_l ">{{ course.name }}</span></a>
+                    {#<span class="float_l fon_siz12 line_hei16 color_gray margin_t5 posi_relative "></span>#}
+                </div>
+                <div class="width100 float_l padding_lr20 height48 fon_siz12 line_hei48 z_inx_3 posi_relative backg_white">
+                    <span class="float_l color_red">{{ course.group.name }}</span>
+                    <span class="float_r color_gray">{{ course.teachHours }} 课时</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+               <h2>学徒日志</h2>
+                <div class="box-shadow">
+                    <img src="{{ asset('img/title_1.jpg') }}" width="100%" height="100">
+                    <div class="padding10 notes">
+                        <ul>
+                            {% for blog in blogs %}
+                            <li> <a href="#">{{ blog.title }}</a><span class="float_r">{{ blog.createdTime|date("Y-m-d") }}</span></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <p class="more"><a href="#">更多日志-></a></p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <h2>互动社区</h2>
+                <div class="box-shadow">
+                    <img src="{{ asset('img/title_1.jpg') }}" width="100%" height="100">
+                    <div class="padding10 notes">
+                        <ul>
+                            <li> <a href="#">1111</a><span class="float_r">2017-06-05</span></li>
+                            <li> <a href="#">1111</a><span class="float_r">2017-06-05</span></li>
+                            <li> <a href="#">1111</a><span class="float_r">2017-06-05</span></li>
+                            <li> <a href="#">1111</a><span class="float_r">2017-06-05</span></li>
+                            <li> <a href="#">1111</a><span class="float_r">2017-06-05</span></li>
+                        </ul>
+                    </div>
+                    <p class="more"><a href="#">获取更多-></a></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="padding_10">
+                <h2>教师介绍</h2>
+            </div>
+            {% for teacher in teachers %}
+                <div class="col-md-3">
+                    <div class="padding10 teacher">
+                        {% if teacher.face %}
+                            <img alt="image" class="img-circle" src="{{ asset('uploads/face/' ~ teacher.face ~ '')}}" width="150" height="150"/>
+                        {% else %}
+                            <img alt="image" class="img-circle" src="{{ asset('img/default_face.png')}}" width="150" height="150"/>
+                        {% endif %}
+                        <p>{{ teacher.name }}({{ teacher.position }})</p>
+                        <p>{{ teacher.info }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+
+        </div>
+        <div class="row">
+            <div class="padding_10">
+                <h2>导师介绍</h2>
+            </div>
+            {% for advisor in advisors %}
+            <div class="col-md-3">
+                <div class="padding10 teacher">
+                    {% if advisor.face %}
+                        <img alt="image" class="img-circle" src="{{ asset('uploads/face/' ~ advisor.face ~ '')}}" width="150" height="150"/>
+                    {% else %}
+                        <img alt="image" class="img-circle" src="{{ asset('img/default_face.png')}}" width="150" height="150"/>
+                    {% endif %}
+                    <p>{{ advisor.name }}({{ advisor.position }})</p>
+                    <p>{{ advisor.info }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+{% block footer %}
+    {{ parent() }}
+{% endblock %}
+{% block javascript %}
+    {{ parent() }}
+    <script src="{{ asset('js/owl.carousel.min.js')}}"></script>
+    <script src="{{ asset('js/home.index.js')}}"></script>
+{% endblock  %}
+</body>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

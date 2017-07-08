@@ -1,0 +1,432 @@
+{% extends 'home-base.html.twig' %}
+
+  {% block stylesheets %}
+      {{ parent() }}
+      <link href="{{ asset('videojs/css/video-js.css')}}" rel="stylesheet">
+      <link href="{{ asset('videojs/css/videojs-playlist-ui.css')}}" rel="stylesheet">
+      <link href="{{ asset('css/style.min862f.css')}}" rel="stylesheet">
+      <link href="{{ asset('css/lesson.css')}}" rel="stylesheet">
+  {% endblock  %}
+{% block body %}
+    <body class="backg_huibai">
+
+    {% block header %}
+        {{ parent() }}
+    {% endblock %}
+    {% block content %}
+        <div style="clear: both"></div>
+    <div class="player-container">
+        <video  id="lesson-video" class="video-js" controls >
+            <source src="{{ asset('uploads/lesson/'~ lesson.video ~ '') }}" type="video/mp4">
+        </video>
+        <div class="vjs-playlist">
+        {% for chapter in course.chapters %}
+            <ol class="vjs-playlist-item-list">
+                <h5>第 {{  loop.index  }} 章{{ chapter.name }}</h5>
+                {% for vlesson in chapter.lessons %}
+                <li class="vjs-playlist-item" tabindex="0" >
+                {% if  vlesson.id == lesson.id%}
+                    <a href="{{ path('home_lesson', {'courseId': course.id,'lessonId':vlesson.id}) }}" style="color: #00a2d4">
+                        <div class="vjs-playlist-thumbnail vjs-playlist-thumbnail-placeholder">
+                            <div class="vjs-playlist-title-container">
+                                <cite class="vjs-playlist-name" title="中医">{{ loop.parent.loop.index }}.{{  loop.index  }}{{ vlesson.name }}</cite>
+                            </div></div>
+                        <time class="vjs-playlist-duration" datetime="PT0H0M45S">{{ vlesson.duration | duration}}</time>
+                    </a>
+                {% else %}
+                    <a href="{{ path('home_lesson', {'courseId': course.id,'lessonId':vlesson.id}) }}">
+                        <div class="vjs-playlist-thumbnail vjs-playlist-thumbnail-placeholder">
+                            <div class="vjs-playlist-title-container">
+                                <cite class="vjs-playlist-name" title="中医">{{ loop.parent.loop.index }}.{{  loop.index  }}{{ vlesson.name }}</cite>
+                            </div></div>
+                        <time class="vjs-playlist-duration" datetime="PT0H0M45S">{{ vlesson.duration | duration}}</time>
+                    </a>
+                {% endif %}
+
+                </li>
+                {% endfor %}
+            </ol>
+          {% endfor %}
+        </div>
+    </div>
+
+    <div class="lesson-nav">
+        <ul class="nav nav-tabs">
+            <span class="pull-right small text-muted"><i class="fa fa-eye"></i> 1406</span>
+            <li class="active"><a data-toggle="tab" href="#tab-1"><i class="glyphicon glyphicon-comment"></i> 讨论</a>
+            </li>
+            <li class=""><a data-toggle="tab" href="#tab-2"><i class="glyphicon glyphicon-menu-hamburger"></i> 笔记</a>
+            </li>
+            <li class=""><a data-toggle="tab" href="#tab-3"><i class="fa fa-edit"></i> 练习</a>
+            </li>
+            <li class=""><a data-toggle="tab" href="#tab-4"><i class="glyphicon glyphicon-download-alt"></i> 资料链接</a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div id="tab-1" class="tab-pane active">
+                <div class="full-height-scroll">
+                    <div >
+                        <table class="table table-striped table-hover">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    {% if  is_granted('IS_AUTHENTICATED_FULLY')%}
+                                        <button class="btn btn-primary btn_submit" id="btn_submit" data-toggle="modal" data-target="#comment_modal">
+                                            <i  class="glyphicon glyphicon-edit"></i>
+                                            发布</button>
+                                    {% else %}
+                                        <button  class="btn btn-primary btn_submit" id="btn_submit" data-toggle="modal" data-target="#login_modal">
+                                            <i  class="glyphicon glyphicon-edit"></i>
+                                            发布</button>
+                                    {% endif %}
+                                    <div style="clear: both;margin-top: 10px"></div>
+                                    {% for comment in comments |sort|reverse %}
+                                        <div class="social-feed-box">
+                                        <div class="social-avatar">
+                                            <a href="#" class="pull-left">
+                                                <img alt="image" src="{{ asset('img/a1.jpg')}}">
+                                            </a>
+                                            <div class="media-body">
+                                                <a href="#">
+                                                    {{ comment.user.username | name}}
+                                                </a>
+                                                <small class="text-muted">{{ comment.createdTime | date("Y-m-d H:i:s") }}</small>
+
+                                            </div>
+
+                                        </div>
+                                        <div class="social-body">
+                                            <p>
+                                                {{ comment.content }}
+                                                {% if  is_granted('IS_AUTHENTICATED_FULLY')%}
+                                                {% if  is_granted('ROLE_TEACHER') or is_granted('ROLE_ADVISOR')%}
+                                                    <a style="float: right" title="删除"  name="{{ comment.id }}" class="remove_comment"><i  class="glyphicon glyphicon-trash"></i>删除</a>
+                                                {% endif %}
+                                                    <a style="float: right" title="回复" data-toggle="modal" data-target="#reply_modal" name="{{ comment.id }}"><i  class="glyphicon glyphicon-edit"></i>回复</a>
+                                                {% endif %}
+                                            </p>
+                                            {% for reply in comment.replies |sort|reverse %}
+                                                <p><small class="text-muted">{{ reply.user.username | name}} 回复 {{ comment.user.username | name}}</small></p>
+                                                <p><small class="text-muted">{{ reply.createdTime | date("Y-m-d H:i:s") }}</small></p>
+                                                <p>{{  reply.content }}</p>
+                                                <hr>
+                                            {% endfor %}
+                                        </div>
+
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="navigation text-center">
+                                {{ knp_pagination_render(comments) }}
+                            </div>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div id="tab-2" class="tab-pane">
+                <div class="full-height-scroll">
+                    <div>
+                        <table class="table table-striped table-hover">
+                            {% if  is_granted('ROLE_STUDENT')%}
+                                <button class="btn btn-primary btn_submit"  data-toggle="modal" data-target="#notes_modal">
+                                    <i  class="glyphicon glyphicon-edit"></i>
+                                    写笔记
+                                </button>
+                            {% endif %}
+                            <div class="row" style="margin-top: 10px">
+                                <div class="col-lg-12">
+                                    {% for note in notes |sort|reverse %}
+                                        <div class="social-feed-box">
+                                        <div class="social-avatar">
+                                            <a href="#" class="pull-left">
+                                                <img alt="image" src="img/a1.jpg">
+                                            </a>
+                                            <div class="media-body">
+                                                {% if note.isGood %}
+                                                    <span style="float: right;border:1px #BBBBBB solid">精华笔记</span>
+                                                {% endif %}
+                                                <a href="#">
+                                                    {{ note.user.username | name}}
+                                                </a>
+                                                <small class="text-muted">{{ note.createdTime | date("Y-m-d H:i:s") }}</small>
+                                            </div>
+
+                                        </div>
+                                        <div class="social-body">
+                                            <p>
+                                                {{ note.content }}
+                                                    {% if  is_granted('ROLE_TEACHER') or is_granted('ROLE_ADVISOR')%}
+                                                        <a style="float: right" title="删除"  name="" class="remove_comment"><i  class="glyphicon glyphicon-trash"></i>删除</a>
+                                                    {% if note.isGood %}
+                                                        <a style="float: right" title="取消精华笔记"  name="{{ note.id }}" class="cancel_good_note"><i  class="glyphicon glyphicon-star"></i>取消精华笔记</a>
+                                                    {% else %}
+                                                        <a style="float: right" title="设为精华笔记"  name="{{ note.id }}" class="good_note"><i  class="glyphicon glyphicon-star"></i>设为精华笔记</a>
+                                                    {% endif %}
+                                                {% endif %}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-3" class="tab-pane">
+                <div class="full-height-scroll">
+                    <div>
+                        <table class="table table-striped table-hover">
+
+                            <div class="row" style="margin-top: 10px">
+                                <div class="col-lg-12">
+                                    {% for question in lesson.questions |sort|reverse %}
+                                        <div class="social-feed-box">
+                                            <div class="social-avatar">
+                                                <span  class="pull-left">
+                                                    {{ loop.index }}.
+                                                </span>
+                                                <div class="media-body">
+                                                    {{ question.questionTitle | raw}}
+                                                    <small class="text-muted">{{ question.questionLevel | level}}</small>
+                                                    <small class="text-muted">{{ question.questionType | questionType}}</small>
+                                                </div>
+
+                                            </div>
+                                            <div class="social-body" id="question_answers">
+                                                {% if question.questionType == 1 %}
+                                                {% for option in question.questionAnswer %}
+                                                    <label>
+                                                        <input type="checkbox" name="{{ question.id }}"  > {{ option | raw}}
+                                                    </label>
+                                                {% endfor %}
+                                                {% else %}
+                                                {% for option in question.questionAnswer %}
+                                                    <label>
+                                                        <input type="radio" name="{{ question.id }}"  > {{ option | raw}}
+                                                    </label>
+                                                {% endfor %}
+                                                {% endif %}
+                                                <div class="answer hidden" style="color: rgba(255,0,0,0.6)">正确答案:
+                                                    {% if question.questionType == 1 %}
+                                                    {% for answer in question.answer %}
+                                                        {{ answer }}
+                                                    {% endfor %}
+                                                    {% else %}
+                                                        {{ question.answer }}
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+
+                                    {% if  is_granted('ROLE_STUDENT')%}
+                                        <button class="btn btn-primary show_answer_btn">
+                                            <i  class="glyphicon glyphicon-edit"></i>
+                                            查看答案
+                                        </button>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div id="tab-4" class="tab-pane">
+                <div class="full-height-scroll">
+                    {{ lesson.lessonRes | raw }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 发布留言 -->
+    <div class="modal fade" id="comment_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <form role="form" id="comment_add_form">
+                        {% if  is_granted('IS_AUTHENTICATED_FULLY')%}
+                        <input type="hidden" value="{{ course.id }}" name="courseId">
+                        <input type="hidden" value="{{ lesson.id }}" name="lessonId">
+                        <input type="hidden" value="{{ app.user.id }}" name="userId">
+                        {% endif %}
+                        <textarea rows="10" cols="80" placeholder="提问字数不得超过200个" name="content"
+                                  required=""
+                                  maxlength="200"
+                        ></textarea>
+                        <button type="submit" class="btn btn-primary">保存</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    </form>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+    <div class="modal fade" id="reply_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <form role="form" id="reply_add_form">
+                            {% if  is_granted('IS_AUTHENTICATED_FULLY')%}
+                            <input type="hidden"  name="commentId" id="commentId">
+                            <input type="hidden" value="{{ course.id }}" name="courseId">
+                            <input type="hidden" value="{{ lesson.id }}" name="lessonId">
+                            <input type="hidden" value="{{ app.user.id }}" name="userId">
+                            {% endif %}
+                            <textarea rows="10" cols="80" placeholder="回复字数不得超过200个" name="content"
+                                      required=""
+                                      maxlength="200"
+                            ></textarea>
+                            <button type="submit" class="btn btn-primary">保存</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        </form>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal -->
+        </div>
+
+    <div class="modal fade" id="notes_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <form role="form" id="notes_add_form">
+                            {% if  is_granted('IS_AUTHENTICATED_FULLY')%}
+                                <input type="hidden" value="{{ course.id }}" name="courseId">
+                                <input type="hidden" value="{{ lesson.id }}" name="lessonId">
+                                <input type="hidden" value="{{ app.user.id }}" name="userId">
+                            {% endif %}
+                            <textarea rows="10" cols="80" placeholder="笔记字数不得超过200个" name="content"
+                                      required=""
+                                      maxlength="200"
+                            ></textarea>
+                            <button type="submit" class="btn btn-primary">保存</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        </form>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal -->
+        </div>
+
+        <div class="modal fade" id="maker_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div id="maker_question_title"></div>
+                        <div id="maker_question_content"></div>
+                        <div id="error_messege" style="color: red"></div>
+                        <button type="submit" class="btn btn-primary" id="check_answer">保存</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal -->
+        </div>
+
+        {{ include('common/loading.html.twig') }}
+    {% endblock %}
+    {% block footer %}
+        {{ parent() }}
+    {% endblock %}
+    {% block javascript %}
+        {{ parent() }}
+        <script src="{{ asset('videojs/js/video.min.js')}}"></script>
+        <script src="{{ asset('videojs/js/videojs-playlist.js')}}"></script>
+        <script src="{{ asset('videojs/js/videojs-playlist-ui.js')}}"></script>
+        <script src="{{ asset('videojs/js/videojs-markers.min.js')}}"></script>
+        <script src="http://static.runoob.com/assets/jquery-validation-1.14.0/dist/jquery.validate.min.js"></script>
+        <script src="{{ asset('js/plugins/validate/messages_zh.min.js')}}"></script>
+        <script src="{{ asset('js/lesson.js')}}"></script>
+        <script type="text/javascript">
+            $(function () {
+                //视频播放完毕,记录到数据库
+                var player = videojs('lesson-video', {});
+                //弹题
+                player.ready(function() {
+                    getMakers();
+                });
+
+                player.on('ended',function () {
+                    $.ajax({
+                        url: '/recode/add',
+                        type: "post",
+                        dataType: "json",
+                        data: {
+                            'lessonId':{{ lesson.id }},
+                            'courseId':{{ course.id }},
+                            'username':{{ app.user.username }},
+                        },
+                        beforeSend : function ()
+                        {
+                            $('#loading').modal('show');
+                        },
+                        success: function (data) {
+                            $('#loading').modal('hide');
+                            if(data.code === 0){
+                                toastr.error(data.message);
+                            }else if(data.code === 1){
+                                toastr.success(data.message);
+                            }else{
+                                toastr.error('code 501 未知错误');
+                            }
+                        },
+                        error: function (data) {
+                            $('#loading').modal('hide');
+                            toastr.error('code 500 未知错误');
+                        }
+                    })
+                });
+
+                function getMakers() {
+                    $.ajax({
+                        url: '/makers/getMakersInLesson',
+                        type: "post",
+                        dataType: "json",
+                        data: {
+                            'id':{{ lesson.id }},
+                        },
+                        beforeSend : function ()
+                        {
+
+                        },
+                        success: function (data) {
+                            player.markers({
+                                markers:data,
+                                onMarkerClick: function(marker) {
+                                },
+                                onMarkerReached: function(marker) {
+                                    player.pause();
+                                    $('#maker_modal').modal('show');
+                                    $('#maker_question_title').html(marker.text['title']);
+                                    for(var i = 0;i<marker.text['question_answer'].length;i++){
+                                        var alphabet= String.fromCharCode(64 + parseInt(i+1));
+                                        var content = ' <label> <input type="radio" name="maker_answer" value="'+alphabet+'">'+marker.text['question_answer'][i]+'</label><br>';
+                                        $('#maker_question_content').append(content);
+                                    }
+                                    $('#check_answer').click(function () {
+                                        var correctAnswer = $("input[name='maker_answer']:checked").val();
+                                        if(correctAnswer == marker.text['answer']){
+                                            $('#maker_modal').modal('hide');
+                                            $('#maker_question_content').empty();
+                                            $('#error_messege').empty();
+                                            player.play();
+                                        }else {
+                                            $('#error_messege').html('回答错误');
+                                        }
+                                    })
+
+                                },
+                            });
+                        },
+                        error: function (data) {
+                            $('#loading').modal('hide');
+                            toastr.error('code 500 未知错误');
+                        }
+                    })
+                }
+            })
+
+        </script>
+    {% endblock  %}
+    </body>
+{% endblock %}

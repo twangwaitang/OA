@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<HTML>
+<HEAD>
+    <TITLE> </TITLE>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="css/demo.css" type="text/css">
+    <link rel="stylesheet" href="css/zTreeStyle/zTreeStyle.css" type="text/css">
+    <script type="text/javascript" src="js/jquery-1.4.4.min.js"></script>
+    <script type="text/javascript" src="js/jquery.ztree.core.js"></script>
+    <!--<script type="text/javascript" src="../../../js/jquery.ztree.excheck.js"></script>-->
+      <script type="text/javascript" src="js/jquery.ztree.exedit.js"></script>
+    <SCRIPT type="text/javascript">
+        <!--
+        var setting = {
+            data: {
+                simpleData: {
+                    enable: true
+                }
+            }
+        };
+
+        var nodes = [
+            {name: "父节点1", children: [
+                {name: "子节点1"},
+                {name: "子节点2"}
+            ]}
+        ];
+
+        $(document).ready(function(){
+            $.fn.zTree.init($("#treeDemo"), setting, nodes);
+        });
+        //-->
+    </SCRIPT>
+</HEAD>
+
+<BODY>
+<div class="content_wrap">
+    <div class="zTreeDemoBackground left">
+        <ul id="treeDemo" class="ztree"></ul>
+    </div>
+</div>
+</BODY>
+</HTML>

@@ -1,0 +1,44 @@
+{% extends 'home-base.html.twig' %}
+
+  {% block stylesheets %}
+      {{ parent() }}
+      <link href="{{ asset('css/jquery.fileupload.css')}}" rel="stylesheet">
+      <link href="{{ asset('css/profilo.css')}}" rel="stylesheet">
+  {% endblock  %}
+
+{% block body %}
+<body class="backg_huibai">
+  {% block content %}
+   <div id="course-list">
+       <ul class="ul-one">
+           {% for group in groups %}
+           <li>
+              <div class="course-list-img">
+                  <a href="{{ path('course_content', {'courseid': group.course.id}) }}" target="_blank">
+                      <img src="{{ asset('uploads/course/'~ group.course.thumbnial) }}">
+                  </a>
+              </div>
+                   <div class="course-list-cont">
+                       <h3>{{ group.course.name }}</h3>
+                       <div class="study-progress">
+                           <span>课程完成度: {{  ((student.recodes | recodes(group.id)/group.id | totalLessons)|number_format(2, '.', ','))*100 }}%</span>
+                       </div>
+                       <div class="study-nots">
+                      <span>
+                          <span>笔记 {{ app.session.get('student').number | noteNum(group.id) |length}}</span>
+                      </span>
+                       <span>
+                          <span>讨论 {{ app.session.get('student').number | commentNum |length}}</span>
+                      </span>
+                           <a href="{{ path('course_content', {'courseid': group.course.id}) }}" target="_blank">继续学习</a>
+                       </div>
+                       <div class="clearfix"></div>
+                   </div>
+           </li>
+           {% endfor %}
+       </ul>
+   </div>
+
+  {% endblock  %}
+</body>
+{% endblock %}

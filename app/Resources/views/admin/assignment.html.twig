@@ -1,0 +1,140 @@
+{% extends 'base.html.twig' %}
+{% block html %}
+    {% block stylesheets %}
+        {{ parent() }}
+    {% endblock  %}
+
+<body class="gray-bg">
+    <div class="wrapper wrapper-content animated fadeInUp">
+        <div class="row">
+            <div class="col-sm-12">
+
+                <div class="ibox">
+                    <div class="ibox-title">
+                        <h5>任务管理</h5>
+                        <div class="ibox-tools">
+
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="row m-b-sm m-t-sm">
+                            <div class="col-md-2">
+                                <button type="button" id="refresh" class="btn btn-primary btn-sm"><i class="fa fa-refresh"></i> 刷新</button>
+                                <button  class="btn btn-primary btn-sm" data-toggle="modal" data-target="#assignment_add_modal"> 创建</button>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                    <input type="text" placeholder="请输入项目名称" class="input-sm form-control"> <span class="input-group-btn">
+                                        <button type="button" class="btn btn-sm btn-primary"> 搜索</button> </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="project-list">
+
+                            <table class="table table-hover">
+                                <tbody>
+                                {% for assignment in assignments |sort|reverse %}
+                                    <tr>
+                                        <td class="project-status">
+                                        </td>
+                                        <td class="project-title">
+                                            <a href="project_detail.html">{{ assignment.title }}</a>
+                                        </td>
+                                        <td class="project-completion">
+                                            <small>创建于 {{ assignment.createdTime|date("Y-m-d") }}</small>
+                                        </td>
+                                        <td class="project-actions">
+                                            <button  data-toggle="modal" data-target="#assignment_assign_modal" class="btn btn-white btn-sm edit_group_btn"  id="{{ assignment.id }}"> 任务分派</button>
+                                            <a   href="{{ path('assignment_detail_students',{'id':assignment.id}) }}" target="_blank" class="btn btn-white btn-sm edit_group_btn"  id="{{ assignment.id }}"> 任务详情</a>
+                                            <button  data-toggle="modal" data-target="#assignment_edit_modal" class="btn btn-white btn-sm edit_group_btn"  id="{{ assignment.id }}"> 编辑</button>
+                                            <button  class="btn btn-white btn-sm remove_news_btn" name="{{ assignment.id }}"> 删除 </button>
+                                        </td>
+                                    </tr>
+
+                                {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <!-- 查看按钮点击之后弹出 -->
+    <div class="modal fade" id="assignment_assign_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    {% for group in groups %}
+                       <a href="#" class="assignment" name="{{ group.id }}"> {{ group.name }} </a>|
+                    {% endfor %}
+                    <table id="students">
+                    </table>
+                </div>
+                <div class="modal-footer" style="border: none">
+                    <button type="button" class="btn btn-primary" id="assign_to_student">保存</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+    <!-- 添加按钮点击之后弹出 -->
+    <div class="modal fade" id="assignment_add_modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="width:960px;">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <form role="form" id="assignment_add_form">
+                        <input id="teacher_id" type="hidden" value="{{ app.user.username }}">
+                        <div class="form-group">
+                            <input name="name" type="text" placeholder="请输入标题" class="form-control"
+                                   id="assignment_add_title"
+                                   required=""
+                                   maxlength="20"
+                                   minlength="2"
+                            >
+                        </div>
+                        <div class="form-news">
+                          <textarea id="assignment_add_content"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">保存</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    </form>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+    <!-- 修改按钮点击之后弹出 -->
+    <div class="modal fade" id="assignment_edit_modal"  role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="overflow-y:auto">
+        <div class="modal-dialog" style="width:960px;">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <form role="form" id="assignment_edit_form">
+                        <div class="form-group">
+                            <input name="name" type="text" placeholder="请输入标题" class="form-control"
+                                   id="assignment_edit_title"
+                                   required=""
+                                   maxlength="20"
+                                   minlength="2"
+                            >
+                        </div>
+                        <div class="form-news">
+                            <textarea id="assignment_edit_content"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">保存</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    </form>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+    {{ include('common/loading.html.twig') }}
+
+    {% block javascript %}
+        {{ parent() }}
+        <script src="{{ asset('bundles/ivoryckeditor/ckeditor.js')}}"></script>
+        <script src="{{ asset('js/assignment.js')}}"></script>
+    {% endblock  %}
+</body>
+{% endblock %}
+

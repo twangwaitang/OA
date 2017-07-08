@@ -1,0 +1,263 @@
+{% extends 'base.html.twig' %}
+{% block html %}
+    {% block stylesheets %}
+        {{ parent() }}
+        <link href="{{ asset('css/jquery.fileupload.css')}}" rel="stylesheet">
+    {% endblock  %}
+
+<body class="gray-bg">
+    <div class="wrapper wrapper-content animated fadeInUp">
+        <div class="row">
+            <div class="col-sm-12">
+
+                <div class="ibox">
+                    <div class="ibox-title">
+                        <h5>课程管理</h5>
+                        <div class="ibox-tools">
+                            <button  class="btn btn-primary btn-xs" id="add_course_btn" data-toggle="modal" data-target="#course_add_modal"> 创建新课程</button>
+                            </div>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="row m-b-sm m-t-sm">
+                            <div class="col-md-1">
+                                <button type="button" id="refresh" class="btn btn-white btn-sm"><i class="fa fa-refresh"></i> 刷新</button>
+                            </div>
+                            <div class="col-md-11">
+                                <div class="input-group">
+                                    <input type="text" placeholder="请输入项目名称" class="input-sm form-control"> <span class="input-group-btn">
+                                        <button type="button" class="btn btn-sm btn-primary"> 搜索</button> </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="project-list">
+
+                            <table class="table table-hover">
+                                <tbody>
+                                {% for course in courses %}
+                                    <tr>
+                                        <td class="project-status">
+                                            {% if course.isFinished %}
+                                            <span class="label label-danger">{{ course.isFinished |isFinished}}</span>
+                                            {% else %}
+                                                <span class="label label-primary">{{ course.isFinished |isFinished}}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if course.thumbnial %}
+                                            <img src="../uploads/course/{{ course.thumbnial }}" width="120" height="60">
+                                            {% else %}
+                                            <img src="../img/course_default.jpg" width="120" height="60">
+                                            {% endif %}
+                                        </td>
+                                        <td class="project-title">
+                                            <a href="project_detail.html">{{ course.name }}</a>
+                                            <br/>
+                                            <small>创建于 {{ course.createdTime|date("Y-m-d") }}</small>
+                                        </td>
+                                        <td class="project-completion">
+                                           <span class="label label-primary">{{ course.group.name }}</span>
+                                            <span class="label label-primary">{{ course.teachHours }} 课时</span>
+                                            {% if course.isFinished %}
+                                                <span class="label label-primary">{{ course.isPublic | isPublic}}</span>
+                                            {% else %}
+                                                <span class="label label-danger">{{ course.isPublic | isPublic}}</span>
+                                            {% endif %}
+
+                                        </td>
+                                        <td class="project-actions">
+                                            <button data-toggle="modal" data-target="#show_course_modal" class="btn btn-white btn-sm" name="{{ course.id }}"> 查看 </button>
+                                            <a href="course/{{ course.id }}/questions" class="btn btn-white btn-sm"  id="add_course_detail_btn"> 试题库 </a>
+                                            <a href="course/detail/{{ course.id }}" class="btn btn-white btn-sm"  id="add_course_detail_btn"> 增加章节 </a>
+                                            <a href="{{ path('exam',{'course_id':course.id}) }}" class="btn btn-white btn-sm"  id="add_exam_btn"> 增加考试 </a>
+                                            <button  data-toggle="modal" data-target="#course_edit_modal" class="btn btn-white btn-sm edit_course_btn"  id="{{ course.id }}" name="{{ course.name }}" data-groupname="{{ course.group.name }}" data-groupid="{{ course.group.id }}"> 编辑</button>
+                                            <button  class="btn btn-white btn-sm remove_course_btn" name="{{ course.id }}"> 删除 </button>
+                                        </td>
+                                    </tr>
+
+                                {% endfor %}
+                                    </tbody>
+                                </table>
+                            <div class="navigation text-center">
+                                {{ knp_pagination_render(courses) }}
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <!-- 查看按钮点击之后弹出 -->
+    <div class="modal fade" id="show_course_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="overflow-y:auto">
+        <div class="modal-dialog" style="width:960px; ">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div id="loading_data">数据加载中...</div>
+                    <div id="show_course_title"></div>
+                    <div id="show_course_info"></div>
+                    <div id="show_course_goal"></div>
+                    <div id="show_course_plan"></div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+    <!-- 添加课程按钮点击之后弹出 -->
+    <div class="modal fade" id="course_add_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="width:960px;">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <form role="form" id="course_add_form">
+                        <div class="form-group">
+                            <input name="name" type="text" placeholder="请输入课程名称" class="form-control"
+                                   id="course_add_name"
+                                   required=""
+                                   maxlength="20"
+                                   minlength="2"
+                            >
+                        </div>
+                        <div class="form-group">
+                            <input name="teach_hours" type="number" placeholder="请输入课时" class="form-control"
+                                   id="course_add_teach_hours"
+                                   required=""
+                                   maxlength="4"
+                                   minlength="2"
+                            >
+                        </div>
+                        <div class="form-group">
+                            <select id="course_add_group" class="form-control" name="group_id"></select>
+                        </div>
+                        <div class="form-group">
+                            <select id="course_add_is_finished" class="form-control" name="group_id">
+                                <option value="0">进行中</option>
+                                <option value="1">已完结</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <select id="course_add_is_public" class="form-control" name="group_id">
+                                <option value="0">完全公开(所有用户都可以使用)</option>
+                                <option value="1">部分公开(只有对应的小组用户才可以使用)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <span class="btn btn-success fileinput-button">
+                                <i class="glyphicon glyphicon-plus"></i>
+                                <span>上传封面图片</span>
+                                <!-- The file input field used as target for the file upload widget -->
+                                <input id="fileupload" type="file" name="files[]" multiple>
+                            </span>
+                            <div>图片格式为jpg,png,图片不得超过500kb</div>
+                            <br>
+                            <!-- The global progress bar -->
+                            <div id="progress" class="progress">
+                                <div class="progress-bar progress-bar-success"></div>
+                            </div>
+                            <!-- The container for the uploaded files -->
+                            <div id="files" class="files"></div>
+                            <div id="file_path"></div>
+                            <div id="file_name"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <textarea id="course_info" cols="20" rows="2" class="ckeditor" placeholder="课程简介..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <textarea id="course_goal" cols="20" rows="2" class="ckeditor" placeholder="课程目标..." ></textarea>
+                        </div>
+                        <div class="form-group">
+                            <textarea id="course_plan" cols="20" rows="2" class="ckeditor" placeholder="课程计划..." ></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">保存</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    </form>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+    <!-- 修改小组按钮点击之后弹出 -->
+    <div class="modal fade" id="course_edit_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="overflow-y:auto">
+        <div class="modal-dialog" style="width:960px;">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <form role="form" id="course_edit_form">
+                        <div class="form-group">
+                            <input type="hidden" id="group_edit_id" name="id">
+                            <input name="name" type="text" placeholder="请输入课程名称" class="form-control"
+                                   id="course_edit_name"
+                                   required=""
+                                   maxlength="20"
+                                   minlength="2"
+                            >
+                        </div>
+                        <div class="form-group">
+                            <input name="teach_hours" type="number" placeholder="请输入课时" class="form-control"
+                                   id="course_edit_teach_hours"
+                                   required=""
+                                   maxlength="4"
+                                   minlength="2"
+                            >
+                        </div>
+                        <div class="form-group">
+                            <select id="course_edit_group" class="form-control" name="group_id"></select>
+                        </div>
+                        <div class="form-group">
+                            <select id="course_edit_is_finished" class="form-control" name="group_id">
+                                <option value="0">进行中</option>
+                                <option value="1">已完结</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <select id="course_edit_is_public" class="form-control" name="group_id">
+                                <option value="0">完全公开(所有用户都可以使用)</option>
+                                <option value="1">部分公开(只有对应的小组用户才可以使用)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <span class="btn btn-success fileinput-button">
+                                <i class="glyphicon glyphicon-plus"></i>
+                                <span>上传封面图片</span>
+                                <!-- The file input field used as target for the file upload widget -->
+                                <input id="edit_fileupload" type="file" name="files[]" multiple>
+                            </span>
+                            <div>图片格式为jpg,png,图片不得超过500kb</div>
+                            <br>
+                            <!-- The global progress bar -->
+                            <div id="edit_progress" class="progress">
+                                <div class="progress-bar progress-bar-success"></div>
+                            </div>
+                            <!-- The container for the uploaded files -->
+                            <div id="edit_files" class="files"></div>
+                            <div id="edit_file_path"></div>
+                            <div id="edit_file_name"></div>
+                        </div>
+                        <div class="form-group">
+                            <textarea id="edit_course_info" cols="20" rows="2" class="ckeditor" placeholder="课程简介..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <textarea id="edit_course_goal" cols="20" rows="2" class="ckeditor" placeholder="课程目标..." ></textarea>
+                        </div>
+                        <div class="form-group">
+                            <textarea id="edit_course_plan" cols="20" rows="2" class="ckeditor" placeholder="课程计划..." ></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">保存</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    </form>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+
+    {{ include('common/loading.html.twig') }}
+
+    {% block javascript %}
+        {{ parent() }}
+        <script src="{{ asset('bundles/ivoryckeditor/ckeditor.js')}}"></script>
+        <script src="{{ asset('js/plugins/uploader/jquery.ui.widget.js')}}"></script>
+        <script src="{{ asset('js/plugins/uploader/jquery.iframe-transport.js')}}"></script>
+        <script src="{{ asset('js/plugins/uploader/jquery.fileupload.js')}}"></script>
+        <script src="{{ asset('js/plugins/uploader/jquery.fileupload-process.js')}}"></script>
+        <script src="{{ asset('js/plugins/uploader/jquery.fileupload-validate.js')}}"></script>
+        <script src="{{ asset('js/course.js')}}"></script>
+    {% endblock  %}
+</body>
+{% endblock %}
+

@@ -1,0 +1,118 @@
+{% extends 'base.html.twig' %}
+{% block html %}
+    {% block stylesheets %}
+        {{ parent() }}
+    {% endblock  %}
+
+<body class="gray-bg">
+    <div class="wrapper wrapper-content animated fadeInUp">
+        <div class="row">
+            <div class="col-sm-12">
+
+                <div class="ibox">
+                    <div class="ibox-title">
+                        <h5>任务详情</h5>
+                        <div class="ibox-tools">
+
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="row m-b-sm m-t-sm">
+                            <div class="col-md-2">
+                                <button type="button" id="refresh" class="btn btn-primary btn-sm"><i class="fa fa-refresh"></i> 刷新</button>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                    <input type="text" placeholder="请输入项目名称" class="input-sm form-control"> <span class="input-group-btn">
+                                        <button type="button" class="btn btn-sm btn-primary"> 搜索</button> </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="project-list">
+
+                            <table class="table table-hover">
+                                <tbody>
+                                {% for assignment in assignments |sort|reverse %}
+                                    <tr>
+                                        <td class="project-status">
+                                            {% if assignment.isFinished %}
+                                                <span class="label label-primary">{{ assignment.isFinished | isAssignmentFinished}}</span>
+                                            {% else %}
+                                                <span class="label label-danger">{{ assignment.isFinished | isAssignmentFinished}}</span>
+                                            {% endif %}
+                                            {% if assignment.isReaded %}
+                                                <span class="label label-primary">{{ assignment.isReaded |isReaded}}</span>
+                                            {% else %}
+                                                <span class="label label-danger">{{ assignment.isReaded |isReaded}}</span>
+                                            {% endif %}
+                                            {% if assignment.id | hasNewReplay(assignment.students.number,app.user.id) %}
+                                                <span class="label label-primary">有新的回复</span>
+                                            {% else %}
+                                                <span class="label label-danger">尚未回复</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="project-title">
+                                            <a href="project_detail.html">{{ assignment.students.name }}</a>
+                                        </td>
+                                        <td class="project-completion">
+                                            <small>创建于 {{ assignment.createdTime|date("Y-m-d") }}</small>
+                                        </td>
+                                        <td class="project-actions">
+                                            <button  data-toggle="modal" data-target="#assignment_detail_modal" class="btn btn-white btn-sm"  id="{{ assignment.students.name }}" name="{{ assignment.id }}"> 任务详情</button>
+                                           {% if assignment.isFinished == false %}
+                                            <button  class="btn btn-white btn-sm assignment_done_btn"  name="{{ assignment.id }}"> 任务完成</button>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+
+                                {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <!-- 查看按钮点击之后弹出 -->
+    <div class="modal fade" id="assignment_detail_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="width:960px;">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <iframe width="90%" frameborder="0" height="700"></iframe>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+    <div class="modal fade" id="assignment_replay_modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="overflow-y:auto">
+        <div class="modal-dialog" style="width:700px; ">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <textarea id="post_replay"></textarea>
+                    <button type="submit" class="btn btn-primary" id="blog_submit">保存</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+
+    {{ include('common/loading.html.twig') }}
+
+    {% block javascript %}
+        {{ parent() }}
+        <script src="{{ asset('bundles/ivoryckeditor/ckeditor.js')}}"></script>
+        <script src="{{ asset('js/assignment-replay.js')}}"></script>
+        <script>
+            $(function () {
+                $('#assignment_detail_modal').on('show.bs.modal', function (e) {
+                    var id = e.relatedTarget.name;
+                    var studentName = e.relatedTarget.id;
+                    $('iframe').attr('src',"/admin/assignment-replay/get/"+ id +'/' + studentName);
+                });
+            })
+        </script>
+    {% endblock  %}
+</body>
+{% endblock %}
+

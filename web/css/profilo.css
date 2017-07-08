@@ -1,0 +1,138 @@
+.banner {
+    width: 100%;
+    height: 300px;
+    /* opacity: 0.5;*/
+    text-align: left;
+    background: url("../img/login-background.jpg") no-repeat;
+    background-size: 100%;
+    position: relative;
+}
+.clear {
+    clear: both;
+}
+.banner .profilo {
+    position: absolute;
+    left: 10%;
+    top: 30%;
+}
+.banner .user-info {
+    position: absolute;
+    top: 40%;
+    left: 23%;
+    color: white;
+}
+.banner .user-info .user-name {
+    font-size: 32px;
+}
+.profilo img {
+    border-radius: 50%;
+    width: 150px;
+    height: 150px;
+}
+.profilo {
+    /*    opacity: 1;*/
+}
+.profilo p {
+    color: #000000;
+    font-size: 16px;
+}
+.person ul li {
+    height: 60px;
+    line-height: 60px;
+    font-size: 16px;
+    width: 160px;
+    border-bottom: 1px #CCCCCC solid;
+}
+.person ul li a {
+    color: #888888;
+}
+
+.person ul li a:hover {
+    color: #235c88;
+}
+/* My Course*/
+.clearfix:before, .clearfix:after {
+    content: "";
+    display: table;
+}
+.clearfix:after {
+    clear: both;
+}
+.clearfix {
+    zoom: 1;
+}
+#course-list {
+    margin-top: 10px;
+}
+#course-list .ul-one li {
+    border: 1px solid #ddd;
+    padding: 10px;
+}
+#course-list .course-list-img{
+    float: left;
+}
+#course-list .course-list-img img{
+    width: 200px;
+    height: auto;
+}
+#course-list .course-list-cont{
+    text-align: left;
+   text-indent: 10px;
+}
+#course-list  .course-list-cont h3{
+    height: 30px;
+    line-height: 30px;
+    font-size: 20px;
+    color: #12171b;
+    font-weight: 400;
+}
+#course-list  .course-list-cont .study-progress{
+    padding: 10px 0px 15px;
+}
+#course-list  .course-list-cont .study-progress span{
+   margin-right: 10px;
+}
+#course-list  .course-list-cont .study-nots span{
+    display: inline-block;
+    width: 170px;
+    margin-left: -8px;
+}
+
+
+/* teachereval */
+#teacher-list .table{
+    collapse: collapse;
+    border: 1px  solid #ddd;
+    width: 100%;
+}
+#teacher-list .table th,#teacher-list .table td{
+    text-align: center;
+    border-left:1px solid #ddd;
+}
+/* teachereval_detail  */
+#evaluate,#teacher-list{
+    position: relative;
+    margin-top: 15px;
+    padding: 5px;
+}
+#evaluate li{
+    border: 1px solid #ddd;
+    clear: both;
+    height: 40px;
+    line-height: 40px;
+    margin-bottom: -4px;
+    border-bottom: none;
+}
+#evaluate li > div{
+    float: left;
+}
+#evaluate .select{
+    position: absolute;
+    right: 10px;
+}
+#evaluate .submit{
+    border-bottom: 1px solid #ddd;
+    height: 50px;
+    position: relative;
+}
+

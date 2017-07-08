@@ -1,0 +1,53 @@
+
+php bin/console server:run
+
+php bin/console doctrine:schema:update --dump-sql
+php bin/console doctrine:schema:update --force
+getter和setter
+php bin/console doctrine:generate:entities AppBundle/Entity/Links
+
+Case mismatch between loaded and declared class names: AppBundle\Entity\teacher vs AppBundle\Entity\Teacher
+use 这里出错 大小写出现错误
+
+在生产环境配置需要生效，需要先清理缓存
+1.cd /alidata/www/default/OA
+2.php bin/console cache:clear --env=prod --no-debug
+
+
+安装第三方bundle
+composer require symfony/finder
+
+使用第三方分页bundle
+1.在程序根目录输入composer require knplabs/knp-paginator-bundle
+2.注册 new Ivory\CKEditorBundle\IvoryCKEditorBundle(),
+3.使用
+
+上传视频需要配合php.ini 默认只能是8M 之后要重启serve 使用php bin/console server:run
+upload_max_filesize = 1000M ;1GB
+post_max_size = 1000M
+
+bootstrap ajax传参数 一个要加contenttype 否则后台接受不到
+  method:'POST',
+  contentType: 'application/x-www-form-urlencoded',
+
+
+错误1:Error: Call to a member function getProducts() on array
+使用findOneBy 而不是 findBy
+
+需要注意
+session 的get方法和注入对象有很大不同
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

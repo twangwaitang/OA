@@ -1,0 +1,84 @@
+<?php
+
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\ArrayCollection;
+use JsonSerializable;
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="links")
+ * @ORM\HasLifecycleCallbacks()
+ * @UniqueEntity(fields="title", message="链接名称已存在")
+ */
+class Links implements JsonSerializable
+{
+    /**
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="string", unique=true)
+     * @Assert\NotBlank(message="链接名称不得为空")
+     */
+    private $title;
+
+    /**
+     * @ORM\Column(type="smallint")
+     */
+    private $isPublic;
+    /**
+     * @ORM\Column(type="string")
+     * @Assert\NotBlank(message="链接图片不得为空")
+     */
+    private $thumbnial;
+    /**
+     * @ORM\Column(type="string")
+     * @Assert\NotBlank(message="链接地址不得为空")
+     */
+    private $url;
+
+    /**
+     * @var \DateTime
+     * @ORM\Column(name="created_time", type="datetime")
+     */
+    private $createdTime ;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="updated_time", type="datetime")
+     */
+    private $updatedTime;
+
+
+    /**
+     * @ORM\PrePersist    //每次在commit前都会执行这个函数，达到自动更新创建时间和更新时间
+     */
+    public function PrePersist(){
+        $date = new \DateTime('now',new \DateTimeZone('PRC'));
+        if ($this->getCreatedTime() == null){
+            $this->setCreatedTime($date);
+        }
+        $this->setUpdatedTime($date);
+    }
+
+    public function jsonSerialize()
+    {
+        return [
+            'id'=> $this->getId(),
+            'isPublic'      => $this->getIsPublic(),
+            'thumbnial'     => $this->getThumbnial(),
+            'created_time'  => $this->getCreatedTime(),
+        ];
+    }
+
+
+}
