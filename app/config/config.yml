@@ -11,10 +11,12 @@ parameters:
     upload_directory: '%kernel.root_dir%/../web/uploads/'
     course_upload_middle_path: 'course/'
     links_upload_middle_path: 'links/'
+    carousel_upload_middle_path: 'carousel/'
     baseweb_upload_middle_path: 'baseweb/'
     face_upload_middle_path: 'face/'
     lesson_upload_middle_path: 'lesson/'
     user_upload_middle_path: 'users/'
+
 
 framework:
     #esi:             ~
